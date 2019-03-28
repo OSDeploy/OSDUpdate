@@ -28,7 +28,7 @@ function Get-DownMcAfee {
         [string]$Download,
         [string]$DownloadPath,
         [switch]$EPO,
-        [switch]$AddInstallScript,
+        #[switch]$AddInstallScript,
         [switch]$RenameDAT
     )
     #===================================================================================================
@@ -71,10 +71,12 @@ function Get-DownMcAfee {
 
     if ($Download -eq 'SuperDAT v2') {
         if ($EPO.IsPresent) {
+            Write-Host "Verifying SuperDAT v2 EPO Download URL ..." -ForegroundColor Cyan
             $DownloadString = 'download.nai.com/products/DatFiles/4.x/NAI/avvepo'
             $link = (Invoke-WebRequest -Uri 'https://www.mcafee.com/enterprise/en-us/downloads/security-updates.html').Links | Where-Object {$_.href -like "*$DownloadString*"}
             $DownloadUrl = $link.href
         } else {
+            Write-Host "Verifying SuperDAT v2 Download URL ..." -ForegroundColor Cyan
             $DownloadString = 'download.nai.com/products/licensed/superdat/english/intel'
             $link = (Invoke-WebRequest -Uri 'https://www.mcafee.com/enterprise/en-us/downloads/security-updates.html').Links | Where-Object {$_.href -like "*$DownloadString*"}
             $DownloadUrl = $link.href
@@ -83,12 +85,12 @@ function Get-DownMcAfee {
 
     if ($Download -eq 'SuperDAT v3') {
         if ($EPO.IsPresent) {
-            Write-Host "Verifying v3 EPO Download URL" -ForegroundColor Cyan
+            Write-Host "Verifying SuperDAT v3 EPO Download URL ..." -ForegroundColor Cyan
             $DownloadString = 'download.nai.com/products/datfiles/V3DAT/epoV3'
             $link = (Invoke-WebRequest -Uri 'https://www.mcafee.com/enterprise/en-us/downloads/security-updates.html').Links | Where-Object {$_.href -like "*$DownloadString*"}
             $DownloadUrl = $link.href
         } else {
-            Write-Host "Verifying v3 EPO Download URL" -ForegroundColor Cyan
+            Write-Host "Verifying SuperDAT v3 EPO Download URL ..." -ForegroundColor Cyan
             $DownloadString = 'download.nai.com/products/datfiles/V3DAT/V3'
             $link = (Invoke-WebRequest -Uri 'https://www.mcafee.com/enterprise/en-us/downloads/security-updates.html').Links | Where-Object {$_.href -like "*$DownloadString*"}
             $DownloadUrl = $link.href
@@ -97,23 +99,30 @@ function Get-DownMcAfee {
     #===================================================================================================
     #   Download
     #===================================================================================================
-    Write-Host "DownloadUrl: $DownloadUrl" -ForegroundColor Cyan
-    Write-Host "DownloadPath: $DownloadPath" -ForegroundColor Cyan
-    Write-Host "Product: $Download" -ForegroundColor Cyan
-
-    if ($Download -eq 'SuperDAT v2' -and $RenameDAT.IsPresent -and (!($EPO.IsPresent)) ) {
-        Write-Host "RenameDAT: $DownloadPath\xdat.exe" -ForegroundColor Cyan
-        Start-BitsTransfer -Source $DownloadUrl -Destination "$DownloadPath\xdat.exe"
-    } elseif ($Download -eq 'SuperDAT v3' -and $RenameDAT.IsPresent -and (!($EPO.IsPresent)) ) {
-        Write-Host "RenameDAT: $DownloadPath\DATv3.exe" -ForegroundColor Cyan
-        Start-BitsTransfer -Source $DownloadUrl -Destination "$DownloadPath\DATv3.exe"
+    if ($null -eq $DownloadUrl) {
+        Write-Warning "Could not locate a valid link ... Exiting"
+        Break
     } else {
-        Start-BitsTransfer -Source $DownloadUrl -Destination "$DownloadPath"
+        Write-Host "DownloadUrl: $DownloadUrl" -ForegroundColor Cyan
+        Write-Host "DownloadPath: $DownloadPath" -ForegroundColor Cyan
+        Write-Host "Product: $Download" -ForegroundColor Cyan
+
+        if ($Download -eq 'SuperDAT v2' -and $RenameDAT.IsPresent -and (!($EPO.IsPresent)) ) {
+            Write-Host "RenameDAT: $DownloadPath\xdat.exe" -ForegroundColor Cyan
+            Start-BitsTransfer -Source $DownloadUrl -Destination "$DownloadPath\xdat.exe"
+        } elseif ($Download -eq 'SuperDAT v3' -and $RenameDAT.IsPresent -and (!($EPO.IsPresent)) ) {
+            Write-Host "RenameDAT: $DownloadPath\DATv3.exe" -ForegroundColor Cyan
+            Start-BitsTransfer -Source $DownloadUrl -Destination "$DownloadPath\DATv3.exe"
+        } else {
+            Start-BitsTransfer -Source $DownloadUrl -Destination "$DownloadPath"
+        }
     }
     #===================================================================================================
     #   AddInstallScript
     #===================================================================================================
-    if ($AddInstallScript.IsPresent) {
-        Write-Verbose "Adding $DownloadPath\OSDUpdate-McAfee.ps1" -Verbose
-        Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\OSDUpdate-McAfee.ps1" "$DownloadPath" -Force | Out-Null}
+    #if ($AddInstallScript.IsPresent) {
+    #    Write-Verbose "Adding $DownloadPath\OSDUpdate-McAfee.ps1" -Verbose
+    #    Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\OSDUpdate-McAfee.ps1" "$DownloadPath" -Force | Out-Null
+    #}
+    #===================================================================================================
 }

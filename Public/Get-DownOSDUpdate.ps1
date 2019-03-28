@@ -51,6 +51,9 @@ function Get-DownOSDUpdate {
         #===================================================================================================
         [Parameter(ParameterSetName = 'Windows')]
         [Parameter(ParameterSetName = 'Office')]
+        [switch]$AddInstallScript,
+        [Parameter(ParameterSetName = 'Windows')]
+        [Parameter(ParameterSetName = 'Office')]
         [switch]$GridView,
 
         [switch]$RemoveSuperseded,
@@ -278,4 +281,20 @@ function Get-DownOSDUpdate {
             }
         }
     }
+    #===================================================================================================
+    #   AddInstallScript
+    #===================================================================================================
+    if ($AddInstallScript.IsPresent) {
+        Write-Verbose "Adding $RepositoryRootPath\Install-OSDUpdate.ps1" -Verbose
+        Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdate.ps1" "$RepositoryRootPath" -Force | Out-Null
+        if ($CatalogOffice) {
+            Write-Verbose "Adding $DownloadsPath\OSDUpdate-Office.ps1" -Verbose
+            Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\OSDUpdate-Office.ps1" "$DownloadsPath" -Force | Out-Null
+        }
+        if ($CatalogWindows) {
+            Write-Verbose "Adding $DownloadsPath\OSDUpdate-Windows.ps1" -Verbose
+            Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\OSDUpdate-Windows.ps1" "$DownloadsPath" -Force | Out-Null
+        }
+    }
+    #===================================================================================================
 }

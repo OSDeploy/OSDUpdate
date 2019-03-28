@@ -115,7 +115,7 @@ $ScriptPath = Split-Path -Parent $Invocation.MyCommand.Path
 $PatchesInstalledRegistry = @()
 $PatchesInstalledRegistry = 'HKLM:\SOFTWARE\Classes\Installer\Patches'
 $PatchesInstalledProductCode = @()
-$PatchesInstalledProductCode = Get-ChildItem -Path $PatchesInstalledRegistry | Select-Object -Property @{Name="ProductCode"; Expression = {$_.PSChildName}} -Unique
+$PatchesInstalledProductCode = Get-ChildItem -Path $PatchesInstalledRegistry -EA SilentlyContinue | Select-Object -Property @{Name="ProductCode"; Expression = {$_.PSChildName}} -Unique
 $PatchesInstalledGuids = @()
 foreach ($InstalledPatch in $PatchesInstalledProductCode) {
     $InstalledPatchGuid = Convert-CompressedGuidToGuid -CompressedGuid "$($InstalledPatch.ProductCode)"
