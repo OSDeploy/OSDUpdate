@@ -100,14 +100,18 @@ function Convert-CompressedGuidToGuid {
         $Guid + ''
     }
 }
-#===================================================================================================
+#======================================================================================
+#   Begin
+#======================================================================================
+Write-Host "OSDUpdate Microsoft Office" -ForegroundColor Green
+#======================================================================================
 #   Current Path
-#===================================================================================================
+#======================================================================================
 $Invocation = (Get-Variable MyInvocation -Scope Script).Value
 $ScriptPath = Split-Path -Parent $Invocation.MyCommand.Path
-#===================================================================================================
+#======================================================================================
 #   Installed Patches
-#===================================================================================================
+#======================================================================================
 $PatchesInstalledRegistry = @()
 $PatchesInstalledRegistry = 'HKLM:\SOFTWARE\Classes\Installer\Patches'
 $PatchesInstalledProductCode = @()
@@ -117,15 +121,15 @@ foreach ($InstalledPatch in $PatchesInstalledProductCode) {
     $InstalledPatchGuid = Convert-CompressedGuidToGuid -CompressedGuid "$($InstalledPatch.ProductCode)"
     $PatchesInstalledGuids += $InstalledPatchGuid
 }
-#===================================================================================================
+#======================================================================================
 #   Available Patches (MSP's)
-#===================================================================================================
+#======================================================================================
 $PatchesAvailable = @()
 $PatchesAvailable = Get-ChildItem "$ScriptPath" -Recurse -File -Include *.msp | Select-Object -Property LastWriteTime,Name,Length,FullName,Directory,BaseName,Extension
 $PatchesAvailable = $PatchesAvailable | Sort-Object -Property @{Expression = {$_.LastWriteTime}; Ascending = $true}, Length -Descending
-#===================================================================================================
+#======================================================================================
 #   Get Patch XML Information
-#===================================================================================================
+#======================================================================================
 foreach ($Patch in $PatchesAvailable) {
     $PatchXml = "$($Patch.Directory)\$($Patch.BaseName).xml"
 
@@ -140,9 +144,9 @@ foreach ($Patch in $PatchesAvailable) {
         $Patch.TargetProductCode = $($xml.MsiPatch.TargetProductCode)
     }
 }
-#===================================================================================================
+#======================================================================================
 #   Set InstallationStatus
-#===================================================================================================
+#======================================================================================
 foreach ($Patch in $PatchesAvailable) {
     $Patch | Add-Member -MemberType NoteProperty -Name InstallStatus -value ''
     foreach ($PatchInstalled in $PatchesInstalledProductCode) {
@@ -151,16 +155,16 @@ foreach ($Patch in $PatchesAvailable) {
         }
     }
 }
-#===================================================================================================
+#======================================================================================
 #   Install Updates
-#===================================================================================================
+#======================================================================================
 foreach ($Patch in $PatchesAvailable) {
     $PatchName = $($Patch.Directory) | Split-Path -Leaf
 
     if ($Patch.InstallStatus -eq 'Installed') {
         Write-Host "Installed: $PatchName $($Patch.Name)" -ForegroundColor DarkGray
     } else {
-        Write-Host "Installing: $PatchName $($Patch.Name)" -ForegroundColor Cyan
+        Write-Host "$PatchName $($Patch.Name)" -ForegroundColor Cyan
         msiexec /p "$($Patch.FullName)" /qn REBOOT=ReallySuppress MSIRESTARTMANAGERCONTROL=Disable | Out-Null
     }
 }
