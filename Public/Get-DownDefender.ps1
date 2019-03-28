@@ -23,7 +23,7 @@ function Get-DownDefender {
         [string]$DownloadPath,
 
         [Parameter(Mandatory)]
-        [ValidateSet('Windows 7','Windows 10')]
+        [ValidateSet('Windows 8-10','Windows V-7')]
         [string]$OS,
 
         [Parameter(Mandatory)]
@@ -40,19 +40,19 @@ function Get-DownDefender {
     Write-Host "OS: $OS" -ForegroundColor Cyan
     Write-Host "Arch: $OSArch" -ForegroundColor Cyan
 
-    if ($OS -eq 'Windows 7' -and $OSArch -eq '32-Bit') {
+    if ($OS -eq 'Windows V-7' -and $OSArch -eq '32-Bit') {
         $DownloadUrl = 'https://go.microsoft.com/fwlink/?LinkID=121721&clcid=0x409&arch=x86&eng=0.0.0.0&avdelta=0.0.0.0&asdelta=0.0.0.0&prod=925A3ACA-C353-458A-AC8D-A7E5EB378092'
     }
 
-    if ($OS -eq 'Windows 7' -and $OSArch -eq '64-Bit') {
+    if ($OS -eq 'Windows V-7' -and $OSArch -eq '64-Bit') {
         $DownloadUrl = 'https://go.microsoft.com/fwlink/?LinkID=121721&clcid=0x409&arch=x86&eng=0.0.0.0&avdelta=0.0.0.0&asdelta=0.0.0.0&prod=925A3ACA-C353-458A-AC8D-A7E5EB378092'
     }
 
-    if ($OS -eq 'Windows 10' -and $OSArch -eq '32-Bit') {
+    if ($OS -eq 'Windows 8-10' -and $OSArch -eq '32-Bit') {
         $DownloadUrl = 'https://go.microsoft.com/fwlink/?LinkID=121721&arch=x86'
     }
 
-    if ($OS -eq 'Windows 10' -and $OSArch -eq '64-Bit') {
+    if ($OS -eq 'Windows 8-10' -and $OSArch -eq '64-Bit') {
         $DownloadUrl = 'https://go.microsoft.com/fwlink/?LinkID=121721&arch=x64'
     }
     #===================================================================================================
