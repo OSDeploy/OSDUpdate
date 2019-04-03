@@ -49,9 +49,9 @@ function Get-DownOSDUpdate {
         #===================================================================================================
         #   Windows and Office
         #===================================================================================================
-        [Parameter(ParameterSetName = 'Windows')]
-        [Parameter(ParameterSetName = 'Office')]
-        [switch]$AddInstallScript,
+        #[Parameter(ParameterSetName = 'Windows')]
+        #[Parameter(ParameterSetName = 'Office')]
+        #[switch]$AddInstallScript,
         [Parameter(ParameterSetName = 'Windows')]
         [Parameter(ParameterSetName = 'Office')]
         [switch]$GridView,
