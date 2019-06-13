@@ -27,8 +27,12 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 # Description of the functionality provided by this module
 Description = @'
 19.3.13
-Detailed updates are in the Readme.md
+Detailed Microsoft Updates are in the Readme.md
 Function New-OSDUpdateRepository moved to Private Functions
+
+The next release of OSDUpdate will be materially different and existing functions may not work
+This will be for the greater goodm trust me
+Contact me for more information @SuneThomsenDK
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module
