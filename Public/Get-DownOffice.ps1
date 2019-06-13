@@ -261,9 +261,10 @@ function Get-DownOffice {
     #===================================================================================================
     Write-Host '========================================================================================' -ForegroundColor DarkGray
     Write-Verbose 'Office Deployment Tool: https://www.microsoft.com/en-us/download/details.aspx?id=49117' -Verbose
-    $OfficeODTUrl = 'https://download.microsoft.com/download/2/7/A/27AF1BE6-DD20-4CB4-B154-EBAB8A7D4A7E/officedeploymenttool_11509-33604.exe'
+    #$OfficeODTUrl = 'https://download.microsoft.com/download/2/7/A/27AF1BE6-DD20-4CB4-B154-EBAB8A7D4A7E/officedeploymenttool_11509-33604.exe'
+    $OfficeODTUrl = 'https://download.microsoft.com/download/2/7/A/27AF1BE6-DD20-4CB4-B154-EBAB8A7D4A7E/officedeploymenttool_11617-33601.exe'
     $OfficeODTDir = "$RepositoryRootPath\OfficeODT"
-    $OfficeODTDownloadFile = "officedeploymenttool_11509-33604.exe"
+    $OfficeODTDownloadFile = "officedeploymenttool_11617-33601.exe"
     $OfficeODT = 'setup.exe'
     $OfficeODTFullName = "$OfficeODTDir\$OfficeODT"
     if (!(Test-Path "$OfficeODTFullName")) {

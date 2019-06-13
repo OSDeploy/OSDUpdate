@@ -100,7 +100,7 @@ function Get-OSDUpdate {
     #===================================================================================================
     #   Update Information
     #===================================================================================================
-    if (!($Silent.IsPresent)) {Write-Warning "Updates are Current as of June 5, 2019"}
+    if (!($Silent.IsPresent)) {Write-Warning "Updates are Current as of June 13, 2019"}
     #===================================================================================================
     #   Variables
     #===================================================================================================
@@ -111,7 +111,7 @@ function Get-OSDUpdate {
     if ($CatalogOffice) {$UpdateCatalogs = Get-ChildItem -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\*" -Include "$($CatalogOffice).xml"}
     if ($CatalogWindows) {
         if ($CatalogWindows -eq 'Windows 10') {
-            $UpdateCatalogs = Get-ChildItem -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\*" -Include 'Windows 10.xml','Windows 10 1903.xml'
+            $UpdateCatalogs = Get-ChildItem -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\*" -Include 'Windows 10.xml'
         } else {
             $UpdateCatalogs = Get-ChildItem -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\*" -Include "$($CatalogWindows).xml"
         }

@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.6.5.1'
+ModuleVersion = '19.6.13.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -26,27 +26,9 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
-Version 19.6.5:
-    6/4/2019 Update for Microsoft Office 2016 (KB4464539) 32-Bit Edition
-    6/4/2019 Update for Microsoft Office 2016 Language Interface Pack (KB4464581) 32-Bit Edition
-    6/4/2019 Update for Microsoft Office 2016 (KB4464579) 32-Bit Edition
-    6/4/2019 Update for Microsoft Project 2016 (KB4464589) 32-Bit Edition
-    6/4/2019 Update for Skype for Business 2016 (KB4464576) 32-Bit Edition
-    6/4/2019 Update for Microsoft Outlook 2016 (KB4464585) 32-Bit Edition
-    6/4/2019 Update for Microsoft Excel 2016 (KB4464578) 32-Bit Edition
-    6/4/2019 Update for Microsoft Office 2016 (KB4464539) 64-Bit Edition
-    6/4/2019 Update for Microsoft Office 2016 Language Interface Pack (KB4464581) 64-Bit Edition
-    6/4/2019 Update for Microsoft Office 2016 (KB4464579) 64-Bit Edition
-    6/4/2019 Update for Microsoft Project 2016 (KB4464589) 64-Bit Edition
-    6/4/2019 Update for Skype for Business 2016 (KB4464576) 64-Bit Edition
-    6/4/2019 Update for Microsoft Outlook 2016 (KB4464585) 64-Bit Edition
-    6/4/2019 Update for Microsoft Excel 2016 (KB4464578) 64-Bit Edition
-
-Version 19.6.3:
-    5/29/2019 2019-05 Servicing Stack Update for Windows 10 Version 1903 for x86-based Systems (KB4498523)
-    5/29/2019 2019-05 Servicing Stack Update for Windows 10 Version 1903 for x64-based Systems (KB4498523)
-    5/29/2019 2019-05 Cumulative Update for Windows 10 Version 1903 for x86-based Systems (KB4497935)
-    5/29/2019 2019-05 Cumulative Update for Windows 10 Version 1903 for x64-based Systems (KB4497935)
+19.3.13
+Detailed updates are in the Readme.md
+Function New-OSDUpdateRepository moved to Private Functions
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module
@@ -91,7 +73,7 @@ FunctionsToExport = 'Get-OSDUpdate',
                     'Get-DownMcAfee',
                     'Get-DownOSDUpdate',
                     'Get-DownOffice',
-                    'New-OSDUpdateRepository',
+                    #'New-OSDUpdateRepository',
                     'Update-ModuleOSDUpdate'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
