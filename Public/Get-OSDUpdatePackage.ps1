@@ -33,8 +33,8 @@ function Get-OSDUpdatePackage {
         [switch]$AppendPackageName,
         [switch]$RemoveSuperseded,
 
-        [ValidateSet('SeguraOSD','SuneThomsenDK')]
-        [string]$InstallScript = 'SeguraOSD',
+        #[ValidateSet('SeguraOSD','SuneThomsenDK')]
+        #[string]$InstallScript = 'SeguraOSD',
 
         [ValidateSet('Default','Proofing','Language','All')]
         [string]$OfficeProfile = 'Default',
