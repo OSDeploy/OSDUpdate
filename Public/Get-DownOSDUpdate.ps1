@@ -44,29 +44,17 @@ Full Path of the OSDUpdate Repository
 #>
 
 function Get-DownOSDUpdate {
-    [CmdletBinding(DefaultParameterSetName = 'Office')]
+    [CmdletBinding()]
     PARAM (
-        #===================================================================================================
-        #   Windows and Office
-        #===================================================================================================
-        #[Parameter(ParameterSetName = 'Windows')]
-        #[Parameter(ParameterSetName = 'Office')]
-        #[switch]$AddInstallScript,
-        [Parameter(ParameterSetName = 'Windows')]
-        [Parameter(ParameterSetName = 'Office')]
-        [switch]$GridView,
-
-        [switch]$RemoveSuperseded,
         [Parameter(Mandatory = $True)]
-        [string]$RepositoryRootPath,
-        #===================================================================================================
-        #   Windows Tab Only
-        #===================================================================================================
-        [Parameter(ParameterSetName = 'Windows', Mandatory = $True)]
         [ValidateSet(
+            'Office 2010 32-Bit',
+            'Office 2010 64-Bit',
+            'Office 2013 32-Bit',
+            'Office 2013 64-Bit',
+            'Office 2016 32-Bit',
+            'Office 2016 64-Bit',
             'Windows 7',
-            #'Windows 8.1',
-            #'Windows 8.1 Dynamic Update',
             'Windows 10',
             'Windows 10 Dynamic Update',
             'Windows 10 Feature On Demand',
@@ -76,7 +64,18 @@ function Get-DownOSDUpdate {
             'Windows Server 2012 R2 Dynamic Update',
             'Windows Server 2016',
             'Windows Server 2019')]
-        [string]$CatalogWindows,
+        [Alias('CatalogOffice','CatalogWindows')]
+        [string]$Catalog,
+
+
+        [Parameter(ParameterSetName = 'Windows')]
+        [Parameter(ParameterSetName = 'Office')]
+        [switch]$GridView,
+
+        [switch]$RemoveSuperseded,
+        [Parameter(Mandatory = $True)]
+        [string]$RepositoryRootPath,
+
 
         [Parameter (ParameterSetName = 'Windows')]
         [ValidateSet ('x64','x86')]
@@ -95,18 +94,7 @@ function Get-DownOSDUpdate {
             'Latest Cumulative Update LCU',
             'Servicing Stack Update SSU')]
         [string]$UpdateGroup,
-        #===================================================================================================
-        #   Office Tab Only
-        #===================================================================================================
-        [Parameter(ParameterSetName = 'Office', Mandatory = $True)]
-        [ValidateSet(
-            'Office 2010 32-Bit',
-            'Office 2010 64-Bit',
-            'Office 2013 32-Bit',
-            'Office 2013 64-Bit',
-            'Office 2016 32-Bit',
-            'Office 2016 64-Bit')]
-        [string]$CatalogOffice,
+
 
         [Parameter(ParameterSetName = 'Office', Mandatory = $True)]
         [ValidateSet(

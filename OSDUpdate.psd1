@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.6.13.0'
+ModuleVersion = '19.6.13.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -31,7 +31,7 @@ Detailed Microsoft Updates are in the Readme.md
 Function New-OSDUpdateRepository moved to Private Functions
 
 The next release of OSDUpdate will be materially different and existing functions may not work
-This will be for the greater goodm trust me
+This will be for the greater good trust me
 Contact me for more information @SuneThomsenDK
 '@
 
@@ -77,6 +77,7 @@ FunctionsToExport = 'Get-OSDUpdate',
                     'Get-DownMcAfee',
                     'Get-DownOSDUpdate',
                     'Get-DownOffice',
+                    'Get-OSDUpdatePackage',
                     #'New-OSDUpdateRepository',
                     'Update-ModuleOSDUpdate'
 

@@ -33,41 +33,17 @@ Displays the results in GridView with -PassThru
 Hides the Warnings
 #>
 function Get-OSDUpdate {
-    [CmdletBinding(DefaultParameterSetName = 'Office')]
+    [CmdletBinding()]
     PARAM (
-        #===================================================================================================
-        #   Both
-        #===================================================================================================
-        [switch]$GridView,
-        [switch]$Silent,
-        #===================================================================================================
-        #   Office Tab Only
-        #===================================================================================================
-        [Parameter(ParameterSetName = 'Office', Mandatory = $True)]
+        #[Parameter(Mandatory = $True)]
         [ValidateSet(
             'Office 2010 32-Bit',
             'Office 2010 64-Bit',
             'Office 2013 32-Bit',
             'Office 2013 64-Bit',
             'Office 2016 32-Bit',
-            'Office 2016 64-Bit')]
-        [string]$CatalogOffice,
-
-        [Parameter(ParameterSetName = 'Office', Mandatory = $True)]
-        [ValidateSet(
-            'Default',
-            'Proofing',
-            'Language',
-            'All')]
-        [string]$OfficeProfile,
-        #===================================================================================================
-        #   Windows Tab Only
-        #===================================================================================================
-        [Parameter(ParameterSetName = 'Windows', Mandatory = $True)]
-        [ValidateSet(
+            'Office 2016 64-Bit',
             'Windows 7',
-            #'Windows 8.1',
-            #'Windows 8.1 Dynamic Update',
             'Windows 10',
             'Windows 10 Dynamic Update',
             'Windows 10 Feature On Demand',
@@ -77,43 +53,62 @@ function Get-OSDUpdate {
             'Windows Server 2012 R2 Dynamic Update',
             'Windows Server 2016',
             'Windows Server 2019')]
-        [string]$CatalogWindows,
+        [Alias('CatalogOffice','CatalogWindows')]
+        [string]$Catalog,
 
-        [Parameter (ParameterSetName = 'Windows')]
+        [switch]$GridView,
+
+        [ValidateSet('Default','Proofing','Language','All')]
+        [string]$OfficeProfile,
+
         [ValidateSet ('x64','x86')]
-        [string]$UpdateArch,
+        [string]$WinArch,
 
-        [Parameter (ParameterSetName = 'Windows')]
         [ValidateSet (1903,1809,1803,1709,1703,1607,1511,1507)]
-        [string]$UpdateBuild,
+        [string]$WinBuild,
 
-        [Parameter(ParameterSetName = 'Windows')]
         [ValidateSet(
-            'Setup Dynamic Update',
-            'Component Dynamic Update',
             'Adobe Flash Player',
             'DotNet Framework',
             'Latest Cumulative Update LCU',
             'Servicing Stack Update SSU')]
-        [string]$UpdateGroup
+        [string]$WinGroup,
+
+        [string]$DownloadPath,
+
+        [switch]$Silent
     )
     #===================================================================================================
     #   Update Information
     #===================================================================================================
-    if (!($Silent.IsPresent)) {Write-Warning "Updates are Current as of June 13, 2019"}
+    if (!($Silent.IsPresent)) {Write-Warning "Updates are Current as of June 12, 2019"}
     #===================================================================================================
     #   Variables
     #===================================================================================================
     $AllOSDUpdates = @()
     #===================================================================================================
-    #   Update Catalogs
+    #   UpdateCatalogs
     #===================================================================================================
-    if ($CatalogOffice) {$UpdateCatalogs = Get-ChildItem -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\*" -Include "$($CatalogOffice).xml"}
-    if ($CatalogWindows) {
-        if ($CatalogWindows -eq 'Windows 10') {
-            $UpdateCatalogs = Get-ChildItem -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\*" -Include 'Windows 10.xml'
-        } else {
-            $UpdateCatalogs = Get-ChildItem -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\*" -Include "$($CatalogWindows).xml"
+    if ($Catalog) {
+        $UpdateCatalogs = Get-ChildItem -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\*" -Include "$($Catalog).xml"
+    } else {
+        $UpdateCatalogs = Get-ChildItem -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\*" -Include "*.xml"
+
+        if ($OfficeProfile) {
+            Write-Warning "You must select an Office Catalog to filter by OfficeProfile"
+            Break
+        }
+        if ($WinArch) {
+            Write-Warning "You must select a Windows Catalog to filter by WinArch"
+            Break
+        }
+        if ($WinBuild) {
+            Write-Warning "You must select a Windows Catalog to filter by WinBuild"
+            Break
+        }
+        if ($WinGroup) {
+            Write-Warning "You must select a Windows Catalog to filter by WinGroup"
+            Break
         }
     }
     #===================================================================================================
@@ -131,7 +126,7 @@ function Get-OSDUpdate {
     #===================================================================================================
     #   Office Superseded
     #===================================================================================================
-    if ($CatalogOffice) {
+    if ($Catalog -like "*Office*") {
         $AllOSDUpdates = $AllOSDUpdates | Sort-Object OriginUri -Unique
         $AllOSDUpdates = $AllOSDUpdates | Sort-Object CreationDate -Descending
 
@@ -156,49 +151,51 @@ function Get-OSDUpdate {
             }
         }
         $AllOSDUpdates = $CurrentUpdates
-    }
-    #===================================================================================================
-    #   Office Profile
-    #===================================================================================================
-    if ($OfficeProfile -eq 'Default') {
-        $AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.FileName -like "*none*" -or $_.FileName -like "*en-us*"}
-        $AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.Title -notlike "*Language Pack*"}
-    }
+        #===================================================================================================
+        #   Office Profile
+        #===================================================================================================
+        if ($OfficeProfile -eq 'Default') {
+            $AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.FileName -like "*none*" -or $_.FileName -like "*en-us*"}
+            $AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.Title -notlike "*Language Pack*"}
+        }
 
-    if ($OfficeProfile -eq 'Language') {
-        $AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.FileName -notlike "*none*" -and $_.FileName -notlike "*en-us*"}
-    }
+        if ($OfficeProfile -eq 'Language') {
+            $AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.FileName -notlike "*none*" -and $_.FileName -notlike "*en-us*"}
+        }
 
-    if ($OfficeProfile -eq 'Proofing') {
-        $AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.FileName -like "*Proof*"}
+        if ($OfficeProfile -eq 'Proofing') {
+            $AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.FileName -like "*Proof*"}
+        }
+    }
+    if ($Catalog -like "*Windows*") {
+        #===================================================================================================
+        #   UpdateArch
+        #===================================================================================================
+        if ($WinArch -eq 'x64') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateArch -eq 'x64'}}
+        if ($WinArch -eq 'x86') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateArch -eq 'x86'}}
+        #===================================================================================================
+        #   Update Build
+        #===================================================================================================
+        if ($WinBuild -eq 1903) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1903'}}
+        if ($WinBuild -eq 1809) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1809'}}
+        if ($WinBuild -eq 1803) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1803'}}
+        if ($WinBuild -eq 1709) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1709'}}
+        if ($WinBuild -eq 1703) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1703'}}
+        if ($WinBuild -eq 1607) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1607'}}
+        if ($WinBuild -eq 1511) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1511'}}
+        if ($WinBuild -eq 1507) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1507'}}
+        #===================================================================================================
+        #   UpdateGroup
+        #===================================================================================================
+        if ($WinGroup -eq 'Setup Dynamic Update') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -eq 'SetupDU'}}
+        if ($WinGroup -eq 'Component Dynamic Update') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -like "ComponentDU*"}}
+        if ($WinGroup -eq 'Adobe Flash Player') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -eq 'AdobeSU'}}
+        if ($WinGroup -eq 'DotNet Framework') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -like "DotNet*"}}
+        if ($WinGroup -eq 'Latest Cumulative Update LCU') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -eq 'LCU'}}
+        if ($WinGroup -eq 'Servicing Stack Update SSU') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -eq 'SSU'}}
     }
     #===================================================================================================
-    #   UpdateArch
-    #===================================================================================================
-    if ($UpdateArch -eq 'x64') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateArch -eq 'x64'}}
-    if ($UpdateArch -eq 'x86') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateArch -eq 'x86'}}
-    #===================================================================================================
-    #   Update Build
-    #===================================================================================================
-    if ($UpdateBuild -eq 1903) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1903'}}
-    if ($UpdateBuild -eq 1809) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1809'}}
-    if ($UpdateBuild -eq 1803) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1803'}}
-    if ($UpdateBuild -eq 1709) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1709'}}
-    if ($UpdateBuild -eq 1703) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1703'}}
-    if ($UpdateBuild -eq 1607) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1607'}}
-    if ($UpdateBuild -eq 1511) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1511'}}
-    if ($UpdateBuild -eq 1507) {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1507'}}
-    #===================================================================================================
-    #   UpdateGroup
-    #===================================================================================================
-    if ($UpdateGroup -eq 'Setup Dynamic Update') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -eq 'SetupDU'}}
-    if ($UpdateGroup -eq 'Component Dynamic Update') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -like "ComponentDU*"}}
-    if ($UpdateGroup -eq 'Adobe Flash Player') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -eq 'AdobeSU'}}
-    if ($UpdateGroup -eq 'DotNet Framework') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -like "DotNet*"}}
-    if ($UpdateGroup -eq 'Latest Cumulative Update LCU') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -eq 'LCU'}}
-    if ($UpdateGroup -eq 'Servicing Stack Update SSU') {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateGroup -eq 'SSU'}}
-    #===================================================================================================
-    #   GridView
+    #   Sorting
     #===================================================================================================
     $AllOSDUpdates = $AllOSDUpdates | Sort-Object -Property @{Expression = {$_.CreationDate}; Ascending = $false}, Size -Descending
     #===================================================================================================
@@ -206,7 +203,72 @@ function Get-OSDUpdate {
     #===================================================================================================
     if ($GridView.IsPresent) {$AllOSDUpdates = $AllOSDUpdates | Out-GridView -PassThru -Title 'Select OSDUpdates'}
     #===================================================================================================
-    #   Return
+    #   DownloadPath
     #===================================================================================================
-    Return $AllOSDUpdates
+    if ($DownloadPath) {
+        foreach ($Update in $AllOSDUpdates) {
+            if ($Update.Catalog -like "Office*") {
+                $UpdateFile = $($Update.FileName)
+                $MspFile = $UpdateFile -replace '.cab', '.msp'
+                $DownloadDirectory = "$DownloadPath\$($Update.Title)"
+    
+                if (!(Test-Path "$DownloadDirectory")) {
+                    Try {New-Item -Path "$DownloadDirectory" -ItemType Directory -Force | Out-Null}
+                    Catch {
+                        $ErrorMessage = $_.Exception.$ErrorMessage
+                        Write-Host "$ErrorMessage"
+                        Write-Warning "Unable to create $DownloadDirectory"
+                        Exit
+                    }
+                }
+            
+                if (Test-Path "$DownloadDirectory\$MspFile") {
+                    Write-Host "$DownloadDirectory\$MspFile" -ForegroundColor Cyan
+                } else {
+                    Write-Host "$DownloadDirectory\$MspFile" -ForegroundColor Cyan
+                    Write-Host "Download: $($Update.OriginUri)" -ForegroundColor Gray
+                    Start-BitsTransfer -Source $($Update.OriginUri) -Destination "$DownloadDirectory\$UpdateFile"
+                }
+    
+                if ((Test-Path "$DownloadDirectory\$UpdateFile") -and (!(Test-Path "$DownloadDirectory\$MspFile"))) {
+                    Write-Host "Expand: $DownloadDirectory\$MspFile" -ForegroundColor Gray
+                    expand "$DownloadDirectory\$UpdateFile" -F:* "$DownloadDirectory" | Out-Null
+                }
+    
+                if ((Test-Path "$DownloadDirectory\$UpdateFile") -and (Test-Path "$DownloadDirectory\$MspFile")) {
+                    Write-Host "Remove: $DownloadDirectory\$UpdateFile" -ForegroundColor Gray
+                    Remove-Item "$DownloadDirectory\$UpdateFile" -Force | Out-Null
+                }
+            } else {
+                $UpdateFile = $($Update.FileName)
+                $DownloadDirectory = "$DownloadPath\$($Update.Title)"
+    
+                if (!(Test-Path "$DownloadDirectory")) {
+                    Try {New-Item -Path "$DownloadDirectory" -ItemType Directory -Force | Out-Null}
+                    Catch {
+                        $ErrorMessage = $_.Exception.$ErrorMessage
+                        Write-Host "$ErrorMessage"
+                        Write-Warning "Unable to create $DownloadDirectory"
+                        Exit
+                    }
+                }
+            
+                if (Test-Path "$DownloadDirectory\$UpdateFile") {
+                    Write-Host "$($Update.Title)" -ForegroundColor Cyan
+                    Write-Host "$DownloadDirectory\$UpdateFile" -ForegroundColor Gray
+                    #Write-Host "Update already downloaded" -ForegroundColor Gray
+                } else {
+                    Write-Host "$($Update.Title)" -ForegroundColor Cyan
+                    Write-Host "$($Update.OriginUri)" -ForegroundColor Gray
+                    Write-Host "$DownloadDirectory\$UpdateFile" -ForegroundColor Gray
+                    Start-BitsTransfer -Source $($Update.OriginUri) -Destination "$DownloadDirectory\$UpdateFile"
+                }
+            }
+        }
+    } else {
+        #===================================================================================================
+        #   Return
+        #===================================================================================================
+        Return $AllOSDUpdates
+    }
 }
