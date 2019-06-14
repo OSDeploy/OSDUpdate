@@ -190,8 +190,10 @@ function Get-OSDUpdatePackage {
             Write-Host ""
         }
 
-        Write-Verbose "Adding $PackagePath\OSDUpdate-Office.ps1" -Verbose
+        Write-Host "Update Install Script $PackagePath\OSDUpdate-Office.ps1" -ForegroundColor Green
         Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\OSDUpdate-Office.ps1" "$PackagePath" -Force | Out-Null
+        $ExportLine = "Get-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
+        $ExportLine | Out-File -FilePath "$PackagePath\Update-Content.ps1"
     }
 
     if ($PackageName -like "Windows*") {
@@ -212,8 +214,10 @@ function Get-OSDUpdatePackage {
                 Start-BitsTransfer -Source $($Update.OriginUri) -Destination "$DownloadDirectory\$UpdateFile"
             }
         }
-        Write-Verbose "Adding $PackagePath\OSDUpdate-Windows.ps1" -Verbose
+        Write-Host "Update Install Script $PackagePath\OSDUpdate-Windows.ps1" -ForegroundColor Green
         Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\OSDUpdate-Windows.ps1" "$PackagePath" -Force | Out-Null
+        $ExportLine = "Get-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
+        $ExportLine | Out-File -FilePath "$PackagePath\Update-Content.ps1"
     }
     #===================================================================================================
 }

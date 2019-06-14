@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.6.13.1'
+ModuleVersion = '19.6.14.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -75,7 +75,7 @@ PowerShellVersion = '5.0'
 FunctionsToExport = 'Get-OSDUpdate',
                     'Get-DownDefender',
                     'Get-DownMcAfee',
-                    'Get-DownOSDUpdate',
+                    #'Get-DownOSDUpdate',
                     'Get-DownOffice',
                     'Get-OSDUpdatePackage',
                     #'New-OSDUpdateRepository',
