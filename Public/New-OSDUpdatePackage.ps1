@@ -1,6 +1,12 @@
-function Get-OSDUpdatePackage {
+function New-OSDUpdatePackage {
     [CmdletBinding()]
     PARAM (
+        [Parameter(Mandatory = $True)]
+        [string]$PackagePath,
+        [switch]$AppendPackageName,
+        [switch]$RemoveSuperseded,
+        [switch]$GridView,
+
         [Parameter(Mandatory = $True)]
         [ValidateSet(
             'Office 2010 32-Bit',
@@ -9,7 +15,6 @@ function Get-OSDUpdatePackage {
             'Office 2013 64-Bit',
             'Office 2016 32-Bit',
             'Office 2016 64-Bit',
-
             'Windows 7 x64',
             'Windows 7 x86',
 
@@ -27,28 +32,22 @@ function Get-OSDUpdatePackage {
 
             'Windows Server 2019 1809')]
         [string]$PackageName,
-        
-        [Parameter(Mandatory = $True)]
-        [string]$PackagePath,
-        [switch]$AppendPackageName,
-        [switch]$RemoveSuperseded,
-
-        #[ValidateSet('SeguraOSD','SuneThomsenDK')]
-        #[string]$InstallScript = 'SeguraOSD',
 
         [ValidateSet('Default','Proofing','Language','All')]
         [string]$OfficeProfile = 'Default',
 
         [Alias('OfficeSetupUpdatesPath')]
-        [string]$OfficeMediaUpdatesPath,
-
-        [switch]$GridView
+        [string]$OfficeMediaUpdatesPath
     )
-    #===================================================================================================
-    #   Variables
-    #===================================================================================================
-    $AllOSDUpdates = @()
 
+    #===================================================================================================
+    #   Get-OSDUpdate
+    #===================================================================================================
+    $OSDUpdate = @()
+    $OSDUpdate = Get-OSDUpdate
+    #===================================================================================================
+    #   AppendPackageName
+    #===================================================================================================
     if ($AppendPackageName) {
         $PackagePath = "$PackagePath\$PackageName"
     }
@@ -57,37 +56,62 @@ function Get-OSDUpdatePackage {
     #===================================================================================================
     if (!(Test-Path "$PackagePath")) {New-Item -Path "$PackagePath" -ItemType Directory -Force | Out-Null}
     #===================================================================================================
-    #   Catalogs
+    #   Multi PackageName
     #===================================================================================================
     if ($PackageName -like "Office*") {
-        $AllOnlineUpdates = Get-OSDUpdate -Catalog $PackageName -OfficeProfile All -Silent
-        $AllOSDUpdates = Get-OSDUpdate -Catalog $PackageName -OfficeProfile $OfficeProfile
+        $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $PackageName}
+    }
 
+    if ($PackageName -like "Windows*") {
+        if ($PackageName -like "Windows 7*") {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows 7'}
+            Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows 7.xml" -Destination "$PackagePath" -Force | Out-Null
+        }
+        if ($PackageName -like "Windows 10*") {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows 10'}
+            $OSDUpdate | Export-Clixml -Path "$PackagePath\OSDUpdateCatalog.xml"
+            #Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows 10.xml" -Destination "$PackagePath" -Force | Out-Null
+        }
+        if ($PackageName -like "Windows Server 2016*") {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 2016'}
+            Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows Server 2016.xml" -Destination "$PackagePath" -Force | Out-Null
+        }
+        if ($PackageName -like "Windows Server 2019*") {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 2019'}
+            Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows Server 2019.xml" -Destination "$PackagePath" -Force | Out-Null
+        }
+    }
+    #===================================================================================================
+    #   Multi Filter
+    #===================================================================================================
+    if ($PackageName -like "Office*") {
+        if ($OfficeProfile -eq 'Default') {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.FileName -like "*none*" -or $_.FileName -like "*en-us*"}
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Title -notlike "*Language Pack*"}
+        }
+        if ($OfficeProfile -eq 'Language') {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.FileName -notlike "*none*" -and $_.FileName -notlike "*en-us*"}
+        }
+        if ($OfficeProfile -eq 'Proofing') {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.FileName -like "*Proof*"}
+        }
         Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\$PackageName.xml" -Destination "$PackagePath" -Force | Out-Null
     }
 
-    if ($PackageName -like "*Windows*") {
-        if ($PackageName -like "Windows 7*") {
-            $AllOnlineUpdates = Get-OSDUpdate -Catalog 'Windows 7'
-            Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows 7.xml" -Destination "$PackagePath" -Force | Out-Null
-
-        } elseif ($PackageName -like "Windows 10*") {
-            $AllOnlineUpdates = Get-OSDUpdate -Catalog 'Windows 10'
-            Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows 10.xml" -Destination "$PackagePath" -Force | Out-Null
-
-        } elseif ($PackageName -like "Windows Server 2016*") {
-            $AllOnlineUpdates = Get-OSDUpdate -Catalog 'Windows Server 2016'
-            Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows Server 2016.xml" -Destination "$PackagePath" -Force | Out-Null
-
-        } elseif ($PackageName -like "Windows Server 2019*") {
-            $AllOnlineUpdates = Get-OSDUpdate -Catalog 'Windows Server 2019'
-            Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows Server 2019.xml" -Destination "$PackagePath" -Force | Out-Null
-        }
-
-        $AllOSDUpdates = $AllOnlineUpdates
+    if ($PackageName -like "Windows*") {
+        if ($PackageName -like "*x64*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateArch -eq 'x64'}}
+        if ($PackageName -like "*x86*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateArch -eq 'x86'}}
+        if ($PackageName -like "*1507*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1507'}}
+        if ($PackageName -like "*1511*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1511'}}
+        if ($PackageName -like "*1607*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1607'}}
+        if ($PackageName -like "*1703*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1703'}}
+        if ($PackageName -like "*1709*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1709'}}
+        if ($PackageName -like "*1803*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1803'}}
+        if ($PackageName -like "*1809*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1809'}}
+        if ($PackageName -like "*1903*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1903'}}
     }
     #===================================================================================================
-    #   Existing Updates
+    #   Multi Existing Updates
     #===================================================================================================
     $ExistingUpdates = @()
     $SupersededUpdates = @()
@@ -95,10 +119,10 @@ function Get-OSDUpdatePackage {
     $ExistingUpdates = Get-ChildItem -Path "$PackagePath\*" -Directory -Recurse | Select-Object -Property *
 
     foreach ($Update in $ExistingUpdates) {
-        if ($AllOnlineUpdates.Title -NotContains $Update.Name) {$SupersededUpdates += $Update.FullName}
+        if ($OSDUpdate.Title -NotContains $Update.Name) {$SupersededUpdates += $Update.FullName}
     }
     #===================================================================================================
-    #   Superseded Updates
+    #   Multi Superseded Updates
     #===================================================================================================
     foreach ($Update in $SupersededUpdates) {
         if ($RemoveSuperseded.IsPresent) {
@@ -109,9 +133,9 @@ function Get-OSDUpdatePackage {
         }
     }
     #===================================================================================================
-    #   Get Downloaded Updates
+    #   Multi Get Downloaded Updates
     #===================================================================================================
-    foreach ($Update in $AllOSDUpdates) {
+    foreach ($Update in $OSDUpdate) {
         if ($PackageName -like "Windows*") {
             $FullUpdatePath = "$PackagePath\$($Update.Title)\$($Update.FileName)"
             if (Test-Path $FullUpdatePath) {
@@ -120,40 +144,24 @@ function Get-OSDUpdatePackage {
         }
     }
     #===================================================================================================
-    #   Filters
-    #===================================================================================================
-    if ($PackageName -like "Windows*") {
-        if ($PackageName -like "*x64*") {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateArch -eq 'x64'}}
-        if ($PackageName -like "*x86*") {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateArch -eq 'x86'}}
-
-        if ($PackageName -like "*1507*") {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1507'}}
-        if ($PackageName -like "*1511*") {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1511'}}
-        if ($PackageName -like "*1607*") {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1607'}}
-        if ($PackageName -like "*1703*") {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1703'}}
-        if ($PackageName -like "*1709*") {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1709'}}
-        if ($PackageName -like "*1803*") {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1803'}}
-        if ($PackageName -like "*1809*") {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1809'}}
-        if ($PackageName -like "*1903*") {$AllOSDUpdates = $AllOSDUpdates | Where-Object {$_.UpdateBuild -eq '1903'}}
-    }
-    #===================================================================================================
-    #   GridView
+    #   Multi GridView
     #===================================================================================================
     if ($PackageName -like "Office*") {
-        $AllOSDUpdates = $AllOSDUpdates | Select-Object -Property OSDStatus,Catalog,CreationDate,KBNumber,Title,FileName,Size,FileUri,OriginUri,OSDGuid
+        $OSDUpdate = $OSDUpdate | Select-Object -Property OSDStatus,Catalog,CreationDate,KBNumber,Title,FileName,Size,FileUri,OriginUri,OSDGuid
     }
     if ($PackageName -like "Windows*") {
-        $AllOSDUpdates = $AllOSDUpdates | Select-Object -Property OSDStatus,Catalog,UpdateOS,UpdateArch,UpdateBuild,CreationDate,KBNumber,Title,FileName,Size,FileUri,OriginUri,OSDGuid
+        $OSDUpdate = $OSDUpdate | Select-Object -Property OSDStatus,Catalog,UpdateOS,UpdateArch,UpdateBuild,CreationDate,KBNumber,Title,FileName,Size,FileUri,OriginUri,OSDGuid
     }
-    if ($GridView.IsPresent) {$AllOSDUpdates = $AllOSDUpdates | Out-GridView -PassThru -Title "Select OSDUpdate Downloads to include in the Package"}
+    if ($GridView.IsPresent) {$OSDUpdate = $OSDUpdate | Out-GridView -PassThru -Title "Select OSDUpdate Downloads to include in the Package"}
     #===================================================================================================
-    #   Sort
+    #   Multi Sort
     #===================================================================================================
-    $AllOSDUpdates = $AllOSDUpdates | Sort-Object DateCreated
+    $OSDUpdate = $OSDUpdate | Sort-Object DateCreated
     #===================================================================================================
-    #   Download
+    #   Office Download
     #===================================================================================================
     if ($PackageName -like "Office*") {
-        foreach ($Update in $AllOSDUpdates) {
+        foreach ($Update in $OSDUpdate) {
             $UpdateFile = $($Update.FileName)
             $MspFile = $UpdateFile -replace '.cab', '.msp'
             $DownloadDirectory = "$PackagePath\$($Update.Title)"
@@ -190,14 +198,16 @@ function Get-OSDUpdatePackage {
             Write-Host ""
         }
 
-        Write-Host "Update Install Script $PackagePath\OSDUpdate-Office.ps1" -ForegroundColor Green
-        Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\OSDUpdate-Office.ps1" "$PackagePath" -Force | Out-Null
-        $ExportLine = "Get-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
-        $ExportLine | Out-File -FilePath "$PackagePath\Update-Content.ps1"
+        Write-Host "Update Install Script $PackagePath\Install-OSDUpdateOffice.ps1" -ForegroundColor Green
+        Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdateOffice.ps1" "$PackagePath" -Force | Out-Null
+        $ExportLine = "New-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
+        $ExportLine | Out-File -FilePath "$PackagePath\Update-OSDUpdatePackage.ps1"
     }
-
+    #===================================================================================================
+    #   Windows Download
+    #===================================================================================================
     if ($PackageName -like "Windows*") {
-        foreach ($Update in $AllOSDUpdates) {
+        foreach ($Update in $OSDUpdate) {
             $UpdateFile = $($Update.FileName)
             $DownloadDirectory = "$PackagePath\$($Update.Title)"
 
@@ -214,10 +224,10 @@ function Get-OSDUpdatePackage {
                 Start-BitsTransfer -Source $($Update.OriginUri) -Destination "$DownloadDirectory\$UpdateFile"
             }
         }
-        Write-Host "Update Install Script $PackagePath\OSDUpdate-Windows.ps1" -ForegroundColor Green
-        Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\OSDUpdate-Windows.ps1" "$PackagePath" -Force | Out-Null
-        $ExportLine = "Get-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
-        $ExportLine | Out-File -FilePath "$PackagePath\Update-Content.ps1"
+        Write-Host "Update Install Script $PackagePath\Install-OSDUpdateWindows.ps1" -ForegroundColor Green
+        Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdateWindows.ps1" "$PackagePath" -Force | Out-Null
+        $ExportLine = "New-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
+        $ExportLine | Out-File -FilePath "$PackagePath\Update-OSDUpdatePackage.ps1"
     }
     #===================================================================================================
 }

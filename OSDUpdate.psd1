@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.6.14.0'
+ModuleVersion = '19.6.19.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -26,10 +26,6 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
-19.3.13
-Detailed Microsoft Updates are in the Readme.md
-Function New-OSDUpdateRepository moved to Private Functions
-
 The next release of OSDUpdate will be materially different and existing functions may not work
 This will be for the greater good trust me
 Contact me for more information @SuneThomsenDK
@@ -75,9 +71,9 @@ PowerShellVersion = '5.0'
 FunctionsToExport = 'Get-OSDUpdate',
                     'Get-DownDefender',
                     'Get-DownMcAfee',
-                    #'Get-DownOSDUpdate',
+                    'Get-DownOSDUpdate',
                     'Get-DownOffice',
-                    'Get-OSDUpdatePackage',
+                    'New-OSDUpdatePackage',
                     #'New-OSDUpdateRepository',
                     'Update-ModuleOSDUpdate'
 

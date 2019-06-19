@@ -53,8 +53,8 @@ else {$Updates = $Updates | Where-Object {$_.UpdateArch -eq 'x86'}}
 #======================================================================================
 #   Operating System
 #======================================================================================
-if ($OSCaption -like "*Windows 7*") {$Updates = $Updates | Where-Object {$_.UpdateOS -eq 'Windows 7'}}
-if ($OSCaption -like "*Windows 10*") {$Updates = $Updates | Where-Object {$_.UpdateOS -eq 'Windows 10'}}
+#if ($OSCaption -like "*Windows 7*") {$Updates = $Updates | Where-Object {$_.UpdateOS -eq 'Windows 7'}}
+#if ($OSCaption -like "*Windows 10*") {$Updates = $Updates | Where-Object {$_.UpdateOS -eq 'Windows 10'}}
 IF ($OSVersion -like "10.*") {$Updates = $Updates | Where-Object {$_.UpdateBuild -eq $OSReleaseID}}
 #======================================================================================
 #   Get-Hotfix
@@ -65,18 +65,35 @@ $InstalledUpdates = Get-HotFix
 #======================================================================================
 Write-Host "Updating Windows" -ForegroundColor Green
 foreach ($Update in $Updates) {
-    $UpdatePath = "$PSScriptRoot\$($Update.Title)\$($Update.FileName)"
-
-    if (Test-Path "$UpdatePath") {
-        Write-Host "$UpdatePath" -ForegroundColor DarkGray
-        if ($InstalledUpdates | Where-Object HotFixID -like "*$($Update.KBNumber)") {
-            Write-Host "KB$($Update.KBNumber) is already installed" -ForegroundColor Cyan
+    if ($Update.UpdateGroup -eq 'SSU') {
+        $UpdatePath = "$PSScriptRoot\$($Update.Title)\$($Update.FileName)"
+        if (Test-Path "$UpdatePath") {
+            Write-Host "$UpdatePath" -ForegroundColor DarkGray
+            if ($InstalledUpdates | Where-Object HotFixID -like "*$($Update.KBNumber)") {
+                Write-Host "KB$($Update.KBNumber) is already installed" -ForegroundColor Cyan
+            } else {
+                Write-Host "Installing $($Update.Title) ..." -ForegroundColor Cyan
+                Dism /Online /Add-Package /PackagePath:"$UpdatePath" /NoRestart
+            }
         } else {
-            Write-Host "Installing $($Update.Title) ..." -ForegroundColor Cyan
-            Dism /Online /Add-Package /PackagePath:"$UpdatePath" /NoRestart
+            Write-Warning "Not Found: $UpdatePath"
         }
-    } else {
-        Write-Warning "Not Found: $UpdatePath"
+    }
+}
+foreach ($Update in $Updates) {
+    if ($Update.UpdateGroup -ne 'SSU') {
+        $UpdatePath = "$PSScriptRoot\$($Update.Title)\$($Update.FileName)"
+        if (Test-Path "$UpdatePath") {
+            Write-Host "$UpdatePath" -ForegroundColor DarkGray
+            if ($InstalledUpdates | Where-Object HotFixID -like "*$($Update.KBNumber)") {
+                Write-Host "KB$($Update.KBNumber) is already installed" -ForegroundColor Cyan
+            } else {
+                Write-Host "Installing $($Update.Title) ..." -ForegroundColor Cyan
+                Dism /Online /Add-Package /PackagePath:"$UpdatePath" /NoRestart
+            }
+        } else {
+            Write-Warning "Not Found: $UpdatePath"
+        }
     }
 }
 #======================================================================================

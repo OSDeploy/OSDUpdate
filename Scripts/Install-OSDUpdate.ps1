@@ -53,7 +53,7 @@ Write-Host "OSDUpdate Path: $OSDUpdatePath" -ForegroundColor Cyan
 #======================================================================================
 #   Get Child Scripts
 #======================================================================================
-$OSDScripts = Get-ChildItem $OSDUpdatePath OSDUpdate*.ps1 -Recurse | Select-Object -Property *
+$OSDScripts = Get-ChildItem $OSDUpdatePath Install-OSDUpdate*.ps1 -Recurse | Select-Object -Property *
 #$OSDScripts = $OSDScripts | Where-Object {$_.FullName -notlike "*Office*"}
 #======================================================================================
 #   Process Child Scripts
