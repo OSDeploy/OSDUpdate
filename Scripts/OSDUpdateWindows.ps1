@@ -1,9 +1,26 @@
+#Requires -RunAsAdministrator
+#Requires -Version 5
+
+<#
+.SYNOPSIS
+    Uses the OSDUpdate Module to update subdirectory OSDUpdate Packages
+
+.DESCRIPTION
+    Uses the OSDUpdate Module to update subdirectory OSDUpdate Packages
+
+.NOTES
+    Author:         David Segura
+    Website:        osdeploy.com
+    Twitter:        @SeguraOSD
+    Version:        19.6.21.0
+#>
+
 #======================================================================================
 #   Begin
 #======================================================================================
 Write-Host "OSDUpdate Microsoft Windows" -ForegroundColor Green
 #======================================================================================
-#   Get OS Information
+#   OS Information
 #======================================================================================
 $OSCaption = $((Get-WmiObject -Class Win32_OperatingSystem).Caption).Trim()
 $OSArchitecture = $((Get-WmiObject -Class Win32_OperatingSystem).OSArchitecture).Trim()
@@ -21,7 +38,7 @@ if ($OSCaption -Like "*Windows 10*") {
 #   Updates
 #======================================================================================
 $Updates = @()
-$UpdateCatalogs = Get-ChildItem $PSScriptRoot "Windows*.xml"
+$UpdateCatalogs = Get-ChildItem $PSScriptRoot "OSDUpdateWindows*.xml"
 Try {
     foreach ($Catalog in $UpdateCatalogs) {
         $Updates += Import-Clixml -Path $Catalog.FullName
@@ -53,8 +70,6 @@ else {$Updates = $Updates | Where-Object {$_.UpdateArch -eq 'x86'}}
 #======================================================================================
 #   Operating System
 #======================================================================================
-#if ($OSCaption -like "*Windows 7*") {$Updates = $Updates | Where-Object {$_.UpdateOS -eq 'Windows 7'}}
-#if ($OSCaption -like "*Windows 10*") {$Updates = $Updates | Where-Object {$_.UpdateOS -eq 'Windows 10'}}
 IF ($OSVersion -like "10.*") {$Updates = $Updates | Where-Object {$_.UpdateBuild -eq $OSReleaseID}}
 #======================================================================================
 #   Get-Hotfix

@@ -65,39 +65,20 @@ function New-OSDUpdatePackage {
     if ($PackageName -like "Windows*") {
         if ($PackageName -like "Windows 7*") {
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows 7'}
-            Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows 7.xml" -Destination "$PackagePath" -Force | Out-Null
         }
         if ($PackageName -like "Windows 10*") {
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows 10'}
-            $OSDUpdate | Export-Clixml -Path "$PackagePath\OSDUpdateCatalog.xml"
-            #Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows 10.xml" -Destination "$PackagePath" -Force | Out-Null
         }
         if ($PackageName -like "Windows Server 2016*") {
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 2016'}
-            Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows Server 2016.xml" -Destination "$PackagePath" -Force | Out-Null
         }
         if ($PackageName -like "Windows Server 2019*") {
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 2019'}
-            Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\Windows Server 2019.xml" -Destination "$PackagePath" -Force | Out-Null
         }
     }
     #===================================================================================================
     #   Multi Filter
     #===================================================================================================
-    if ($PackageName -like "Office*") {
-        if ($OfficeProfile -eq 'Default') {
-            $OSDUpdate = $OSDUpdate | Where-Object {$_.FileName -like "*none*" -or $_.FileName -like "*en-us*"}
-            $OSDUpdate = $OSDUpdate | Where-Object {$_.Title -notlike "*Language Pack*"}
-        }
-        if ($OfficeProfile -eq 'Language') {
-            $OSDUpdate = $OSDUpdate | Where-Object {$_.FileName -notlike "*none*" -and $_.FileName -notlike "*en-us*"}
-        }
-        if ($OfficeProfile -eq 'Proofing') {
-            $OSDUpdate = $OSDUpdate | Where-Object {$_.FileName -like "*Proof*"}
-        }
-        Copy-Item -Path "$($MyInvocation.MyCommand.Module.ModuleBase)\Catalogs\$PackageName.xml" -Destination "$PackagePath" -Force | Out-Null
-    }
-
     if ($PackageName -like "Windows*") {
         if ($PackageName -like "*x64*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateArch -eq 'x64'}}
         if ($PackageName -like "*x86*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateArch -eq 'x86'}}
@@ -109,6 +90,20 @@ function New-OSDUpdatePackage {
         if ($PackageName -like "*1803*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1803'}}
         if ($PackageName -like "*1809*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1809'}}
         if ($PackageName -like "*1903*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1903'}}
+    }
+    $OSDUpdate | Export-Clixml -Path "$PackagePath\OSDUpdatePackage.xml" -Force | Out-Null
+
+    if ($PackageName -like "Office*") {
+        if ($OfficeProfile -eq 'Default') {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.FileName -like "*none*" -or $_.FileName -like "*en-us*"}
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Title -notlike "*Language Pack*"}
+        }
+        if ($OfficeProfile -eq 'Language') {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.FileName -notlike "*none*" -and $_.FileName -notlike "*en-us*"}
+        }
+        if ($OfficeProfile -eq 'Proofing') {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.FileName -like "*Proof*"}
+        }
     }
     #===================================================================================================
     #   Multi Existing Updates
@@ -154,7 +149,7 @@ function New-OSDUpdatePackage {
     }
     if ($GridView.IsPresent) {$OSDUpdate = $OSDUpdate | Out-GridView -PassThru -Title "Select OSDUpdate Downloads to include in the Package"}
     #===================================================================================================
-    #   Multi Sort
+    #   Sort
     #===================================================================================================
     $OSDUpdate = $OSDUpdate | Sort-Object DateCreated
     #===================================================================================================
@@ -197,11 +192,6 @@ function New-OSDUpdatePackage {
             Copy-Item -Path "$DownloadDirectory\$MspFile" "$OfficeMediaUpdatesPath\$MspFile" -Force
             Write-Host ""
         }
-
-        Write-Host "Update Install Script $PackagePath\Install-OSDUpdateOffice.ps1" -ForegroundColor Green
-        Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdateOffice.ps1" "$PackagePath" -Force | Out-Null
-        $ExportLine = "New-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
-        $ExportLine | Out-File -FilePath "$PackagePath\Update-OSDUpdatePackage.ps1"
     }
     #===================================================================================================
     #   Windows Download
@@ -224,10 +214,12 @@ function New-OSDUpdatePackage {
                 Start-BitsTransfer -Source $($Update.OriginUri) -Destination "$DownloadDirectory\$UpdateFile"
             }
         }
-        Write-Host "Update Install Script $PackagePath\Install-OSDUpdateWindows.ps1" -ForegroundColor Green
-        Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdateWindows.ps1" "$PackagePath" -Force | Out-Null
-        $ExportLine = "New-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
-        $ExportLine | Out-File -FilePath "$PackagePath\Update-OSDUpdatePackage.ps1"
     }
     #===================================================================================================
+    #   Export Install Script
+    #===================================================================================================
+    Write-Host "Update Install Script $PackagePath\Install-OSDUpdatePackage.ps1" -ForegroundColor Green
+    Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdatePackage.ps1" "$PackagePath" -Force | Out-Null
+    $ExportLine = "New-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
+    $ExportLine | Out-File -FilePath "$PackagePath\Update-OSDUpdatePackage.ps1"
 }

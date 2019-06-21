@@ -1,6 +1,18 @@
+#Requires -RunAsAdministrator
+#Requires -Version 5
+
 <#
+.SYNOPSIS
+    Installs Updates in an OSDUpdate Package from Child Directories
+
+.DESCRIPTION
+    Installs Updates in an OSDUpdate Package from Child Directories
+
 .NOTES
-    AUTHOR:	David Segura
+    Author:         David Segura
+    Website:        osdeploy.com
+    Twitter:        @SeguraOSD
+    Version:        19.6.21.0
 #>
 #======================================================================================
 #   Validate Admin Rights
@@ -53,8 +65,7 @@ Write-Host "OSDUpdate Path: $OSDUpdatePath" -ForegroundColor Cyan
 #======================================================================================
 #   Get Child Scripts
 #======================================================================================
-$OSDScripts = Get-ChildItem $OSDUpdatePath Install-OSDUpdate*.ps1 -Recurse | Select-Object -Property *
-#$OSDScripts = $OSDScripts | Where-Object {$_.FullName -notlike "*Office*"}
+$OSDScripts = Get-ChildItem $OSDUpdatePath Install-OSDUpdatePackage.ps1 -Recurse | Select-Object -Property *
 #======================================================================================
 #   Process Child Scripts
 #======================================================================================
