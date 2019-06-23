@@ -1,11 +1,48 @@
+<#
+.SYNOPSIS
+Creates Package Bundles of Microsoft Updates
+
+.DESCRIPTION
+Creates Package Bundles of Microsoft Updates
+Requires BITS for downloading the updates
+Requires Internet access for downloading the updates
+
+.LINK
+https://www.osdeploy.com/osdupdate/docs/functions/new-osdupdatepackage
+
+.PARAMETER PackagePath
+Package Content will be downloaded into the PackagePath
+
+.PARAMETER PackageName
+The name of the OSDUpdate Package.  These values are predefined
+
+.PARAMETER AppendPackageName
+Downloads Updates in the PackagePath in a PackageName subdirectory
+
+.PARAMETER GridView
+Displays the results in GridView with -PassThru.  Updates selected in GridView can be selected
+
+.PARAMETER OfficeProfile
+Downloads Office Updates with the selected Profile
+
+.PARAMETER OfficeSetupUpdatesPath
+Updates Directory for Office Setup
+
+.PARAMETER RemoveSuperseded
+Remove Superseded Updates
+
+.PARAMETER SkipInstallScript
+Skips adding $PackagePath\Install-OSDUpdatePackage.ps1
+
+.PARAMETER SkipUpdateScript
+Skips adding $PackagePath\Update-OSDUpdatePackage.ps1
+
+#>
 function New-OSDUpdatePackage {
     [CmdletBinding()]
     PARAM (
         [Parameter(Mandatory = $True)]
         [string]$PackagePath,
-        [switch]$AppendPackageName,
-        [switch]$RemoveSuperseded,
-        [switch]$GridView,
 
         [Parameter(Mandatory = $True)]
         [ValidateSet(
@@ -33,11 +70,18 @@ function New-OSDUpdatePackage {
             'Windows Server 2019 1809')]
         [string]$PackageName,
 
+        [switch]$AppendPackageName,
+        [switch]$GridView,
+
         [ValidateSet('Default','Proofing','Language','All')]
         [string]$OfficeProfile = 'Default',
 
-        [Alias('OfficeSetupUpdatesPath')]
-        [string]$OfficeMediaUpdatesPath
+        [string]$OfficeSetupUpdatesPath,
+
+        [switch]$RemoveSuperseded,
+        [switch]$SkipInstallScript,
+        [switch]$SkipUpdateScript
+
     )
 
     #===================================================================================================
@@ -184,12 +228,12 @@ function New-OSDUpdatePackage {
         #===================================================================================================
         #   Office Setup Updates
         #===================================================================================================
-        if ($OfficeMediaUpdatesPath) {
-            if (!(Test-Path "$OfficeMediaUpdatesPath")) {New-Item -Path "$OfficeMediaUpdatesPath" -ItemType Directory -Force | Out-Null}
+        if ($OfficeSetupUpdatesPath) {
+            if (!(Test-Path "$OfficeSetupUpdatesPath")) {New-Item -Path "$OfficeSetupUpdatesPath" -ItemType Directory -Force | Out-Null}
             Write-Host "Date Created: $($Update.DateCreated)" -ForegroundColor Gray
             Write-Host "Source: $DownloadDirectory\$MspFile" -ForegroundColor Gray
-            Write-Host "Destination: $OfficeMediaUpdatesPath\$MspFile" -ForegroundColor Gray
-            Copy-Item -Path "$DownloadDirectory\$MspFile" "$OfficeMediaUpdatesPath\$MspFile" -Force
+            Write-Host "Destination: $OfficeSetupUpdatesPath\$MspFile" -ForegroundColor Gray
+            Copy-Item -Path "$DownloadDirectory\$MspFile" "$OfficeSetupUpdatesPath\$MspFile" -Force
             Write-Host ""
         }
     }
@@ -216,10 +260,17 @@ function New-OSDUpdatePackage {
         }
     }
     #===================================================================================================
-    #   Export Install Script
+    #   Install Script
     #===================================================================================================
-    Write-Host "Update Install Script $PackagePath\Install-OSDUpdatePackage.ps1" -ForegroundColor Green
-    Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdatePackage.ps1" "$PackagePath" -Force | Out-Null
-    $ExportLine = "New-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
-    $ExportLine | Out-File -FilePath "$PackagePath\Update-OSDUpdatePackage.ps1"
+    if (!($SkipInstallScript)) {
+        Write-Host "Update Install Script $PackagePath\Install-OSDUpdatePackage.ps1" -ForegroundColor Green
+        Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdatePackage.ps1" "$PackagePath" -Force | Out-Null
+    }
+    #===================================================================================================
+    #   Update Script
+    #===================================================================================================
+    if (!($SkipUpdateScript)) {
+        $ExportLine = "New-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
+        $ExportLine | Out-File -FilePath "$PackagePath\Update-OSDUpdatePackage.ps1"
+    }
 }

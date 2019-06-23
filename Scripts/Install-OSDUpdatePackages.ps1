@@ -12,7 +12,7 @@
     Author:         David Segura
     Website:        osdeploy.com
     Twitter:        @SeguraOSD
-    Version:        19.6.21.0
+    Version:        19.6.22.0
 #>
 #======================================================================================
 #   Validate Admin Rights

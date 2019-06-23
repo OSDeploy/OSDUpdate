@@ -3,16 +3,16 @@
 
 <#
 .SYNOPSIS
-    Installs Updates in an OSDUpdate Package
+    Installs Updates in an OSDUpdate Package for Office and Windows
 
 .DESCRIPTION
-    Installs Updates in an OSDUpdate Package
+    Installs Updates in an OSDUpdate Package for Office and Windows
 
 .NOTES
     Author:         David Segura
     Website:        osdeploy.com
     Twitter:        @SeguraOSD
-    Version:        19.6.21.0
+    Version:        19.6.22.0
 #>
 
 function Convert-GuidToCompressedGuid {

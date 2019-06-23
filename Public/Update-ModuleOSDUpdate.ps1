@@ -8,9 +8,16 @@ Updates the OSDUpdate PowerShell Module to the latest version from the PowerShel
 .LINK
 https://www.osdeploy.com/osdupdate/docs/functions/update-moduleosdupdate
 
+.NOTES
+    Author:         David Segura
+    Website:        osdeploy.com
+    Twitter:        @SeguraOSD
+    Version:        19.6.22.0
+
 .Example
 Update-ModuleOSDUpdate
 #>
+
 function Update-ModuleOSDUpdate {
     [CmdletBinding()]
     PARAM ()

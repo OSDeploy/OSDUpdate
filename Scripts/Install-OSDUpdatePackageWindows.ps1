@@ -3,16 +3,16 @@
 
 <#
 .SYNOPSIS
-    Uses the OSDUpdate Module to update subdirectory OSDUpdate Packages
+    Standalone script for applying Legacy Office Updates
 
 .DESCRIPTION
-    Uses the OSDUpdate Module to update subdirectory OSDUpdate Packages
+    Standalone script for applying Legacy Office Updates
 
 .NOTES
     Author:         David Segura
     Website:        osdeploy.com
     Twitter:        @SeguraOSD
-    Version:        19.6.21.0
+    Version:        19.6.22.0
 #>
 
 #======================================================================================

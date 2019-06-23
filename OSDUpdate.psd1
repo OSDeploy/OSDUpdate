@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.6.19.0'
+ModuleVersion = '19.6.22.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -26,9 +26,7 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
-The next release of OSDUpdate will be materially different and existing functions may not work
-This will be for the greater good trust me
-Contact me for more information @SuneThomsenDK
+Going forward OSDUpdate will focus on downloading individual Microsoft WSUS Updates or creating Microsoft WSUS Update Packages for use in OSD
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module

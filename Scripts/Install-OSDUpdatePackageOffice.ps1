@@ -1,3 +1,19 @@
+#Requires -RunAsAdministrator
+#Requires -Version 5
+
+<#
+.SYNOPSIS
+    Standalone script for applying Legacy Office Updates
+
+.DESCRIPTION
+    Standalone script for applying Legacy Office Updates
+
+.NOTES
+    Author:         David Segura
+    Website:        osdeploy.com
+    Twitter:        @SeguraOSD
+    Version:        19.6.22.0
+#>
 function Convert-GuidToCompressedGuid {
     <#
     .SYNOPSIS
