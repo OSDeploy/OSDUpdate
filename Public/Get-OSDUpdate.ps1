@@ -14,6 +14,7 @@ Displays the results in GridView with -PassThru
 .PARAMETER Silent
 Hide the Current Update Date information
 #>
+
 function Get-OSDUpdate {
     [CmdletBinding()]
     PARAM (
@@ -49,7 +50,8 @@ function Get-OSDUpdate {
     #===================================================================================================
     #   Sorting
     #===================================================================================================
-    $OSDUpdate = $OSDUpdate | Sort-Object -Property @{Expression = {$_.CreationDate}; Ascending = $false}, Size -Descending
+    #$OSDUpdate = $OSDUpdate | Sort-Object -Property @{Expression = {$_.CreationDate}; Ascending = $false}, Size -Descending
+    $OSDUpdate = $OSDUpdate | Sort-Object -Property CreationDate -Descending
     #===================================================================================================
     #   GridView
     #===================================================================================================

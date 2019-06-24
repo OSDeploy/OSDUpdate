@@ -224,17 +224,16 @@ function New-OSDUpdatePackage {
                 Write-Host "Remove: $DownloadDirectory\$UpdateFile" -ForegroundColor Gray
                 Remove-Item "$DownloadDirectory\$UpdateFile" -Force | Out-Null
             }
-        }
-        #===================================================================================================
-        #   Office Setup Updates
-        #===================================================================================================
-        if ($OfficeSetupUpdatesPath) {
-            if (!(Test-Path "$OfficeSetupUpdatesPath")) {New-Item -Path "$OfficeSetupUpdatesPath" -ItemType Directory -Force | Out-Null}
-            Write-Host "Date Created: $($Update.DateCreated)" -ForegroundColor Gray
-            Write-Host "Source: $DownloadDirectory\$MspFile" -ForegroundColor Gray
-            Write-Host "Destination: $OfficeSetupUpdatesPath\$MspFile" -ForegroundColor Gray
-            Copy-Item -Path "$DownloadDirectory\$MspFile" "$OfficeSetupUpdatesPath\$MspFile" -Force
-            Write-Host ""
+            #===================================================================================================
+            #   Office Setup Updates
+            #===================================================================================================
+            if ($OfficeSetupUpdatesPath) {
+                if (!(Test-Path "$OfficeSetupUpdatesPath")) {New-Item -Path "$OfficeSetupUpdatesPath" -ItemType Directory -Force | Out-Null}
+                Write-Host "Date Created: $($Update.CreationDate)" -ForegroundColor Gray
+                Write-Host "Source: $DownloadDirectory\$MspFile" -ForegroundColor Gray
+                Write-Host "Destination: $OfficeSetupUpdatesPath\$MspFile" -ForegroundColor Gray
+                Copy-Item -Path "$DownloadDirectory\$MspFile" "$OfficeSetupUpdatesPath\$MspFile" -Force
+            }
         }
     }
     #===================================================================================================
@@ -263,13 +262,14 @@ function New-OSDUpdatePackage {
     #   Install Script
     #===================================================================================================
     if (!($SkipInstallScript)) {
-        Write-Host "Update Install Script $PackagePath\Install-OSDUpdatePackage.ps1" -ForegroundColor Green
+        Write-Host "Install Script: $PackagePath\Install-OSDUpdatePackage.ps1" -ForegroundColor Green
         Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdatePackage.ps1" "$PackagePath" -Force | Out-Null
     }
     #===================================================================================================
     #   Update Script
     #===================================================================================================
     if (!($SkipUpdateScript)) {
+        Write-Host "Update Script: $PackagePath\Update-OSDUpdatePackage.ps1" -ForegroundColor Green
         $ExportLine = "New-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"" -RemoveSuperseded"
         $ExportLine | Out-File -FilePath "$PackagePath\Update-OSDUpdatePackage.ps1"
     }
