@@ -28,6 +28,8 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 Description = @'
 This release is considered a v2 with many changes that are not compatible with previous releases.
 The new focus of OSDUpdate is to allow individual Microsoft WSUS Updates to be downloaded, or creating Microsoft WSUS Update Packages for use in OSD
+
+Guides: https://www.osdeploy.com/osdupdate/guides
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module
