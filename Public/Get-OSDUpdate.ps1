@@ -6,7 +6,7 @@ Returns an Array of Microsoft Updates
 Returns an Array of Microsoft Updates contained in the local WSUS Catalogs
 
 .LINK
-https://www.osdeploy.com/osdupdate/docs/functions/get-osdupdate
+https://www.osdeploy.com/osdupdate/functions/get-osdupdate
 
 .PARAMETER GridView
 Displays the results in GridView with -PassThru

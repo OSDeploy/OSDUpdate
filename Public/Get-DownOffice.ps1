@@ -7,7 +7,7 @@ Downloads Microsoft Office 365 and Office 2019
 Requires Internet access for downloading the updates
 
 .LINK
-https://www.osdeploy.com/osdupdate/docs/functions/get-downoffice
+https://www.osdeploy.com/osdupdate/functions/get-downoffice
 
 .PARAMETER RepositoryRootPath
 Full Path of the OSDUpdate Repository

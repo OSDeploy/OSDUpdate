@@ -6,7 +6,7 @@ Downloads McAfee SuperDATs and Tools
 Downloads McAfee SuperDATs and Tools
 
 .LINK
-https://www.osdeploy.com/osdupdate/docs/functions/get-downmcafee
+https://www.osdeploy.com/osdupdate/functions/get-downmcafee
 
 .PARAMETER Product
 The type of update to download

@@ -8,7 +8,7 @@ Requires BITS for downloading the updates
 Requires Internet access for downloading the updates
 
 .LINK
-https://www.osdeploy.com/osdupdate/docs/functions/new-osdupdatepackage
+https://www.osdeploy.com/osdupdate/functions/new-osdupdatepackage
 
 .PARAMETER PackagePath
 Package Content will be downloaded into the PackagePath
@@ -46,28 +46,34 @@ function New-OSDUpdatePackage {
 
         [Parameter(Mandatory = $True)]
         [ValidateSet(
+            #================================
+            #   Office
+            #================================
             'Office 2010 32-Bit',
             'Office 2010 64-Bit',
             'Office 2013 32-Bit',
             'Office 2013 64-Bit',
             'Office 2016 32-Bit',
             'Office 2016 64-Bit',
+            #================================
+            #   Windows
+            #================================
             'Windows 7 x64',
             'Windows 7 x86',
-
             'Windows 10 x64 1803',
             'Windows 10 x64 1809',
             'Windows 10 x64 1903',
-
             'Windows 10 x86 1803',
             'Windows 10 x86 1809',
             'Windows 10 x86 1903',
-
             'Windows Server 2016 1607',
             'Windows Server 2016 1709',
             'Windows Server 2016 1803',
-
-            'Windows Server 2019 1809')]
+            'Windows Server 2019 1809',
+            #================================
+            #   Other
+            #================================
+            'Servicing Stacks')]
         [string]$PackageName,
 
         [switch]$AppendPackageName,
@@ -100,7 +106,7 @@ function New-OSDUpdatePackage {
     #===================================================================================================
     if (!(Test-Path "$PackagePath")) {New-Item -Path "$PackagePath" -ItemType Directory -Force | Out-Null}
     #===================================================================================================
-    #   Multi PackageName
+    #   Filter Catalog
     #===================================================================================================
     if ($PackageName -like "Office*") {
         $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $PackageName}
@@ -121,8 +127,12 @@ function New-OSDUpdatePackage {
         }
     }
     #===================================================================================================
-    #   Multi Filter
+    #   Filter Other
     #===================================================================================================
+    if ($PackageName -eq 'Servicing Stacks') {
+        $OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateGroup -eq 'SSU'}
+    }
+
     if ($PackageName -like "Windows*") {
         if ($PackageName -like "*x64*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateArch -eq 'x64'}}
         if ($PackageName -like "*x86*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateArch -eq 'x86'}}
@@ -175,7 +185,7 @@ function New-OSDUpdatePackage {
     #   Multi Get Downloaded Updates
     #===================================================================================================
     foreach ($Update in $OSDUpdate) {
-        if ($PackageName -like "Windows*") {
+        if ($PackageName -like "Windows*" -or $PackageName -eq 'Servicing Stacks') {
             $FullUpdatePath = "$PackagePath\$($Update.Title)\$($Update.FileName)"
             if (Test-Path $FullUpdatePath) {
                 $Update.OSDStatus = "Downloaded"
@@ -187,8 +197,7 @@ function New-OSDUpdatePackage {
     #===================================================================================================
     if ($PackageName -like "Office*") {
         $OSDUpdate = $OSDUpdate | Select-Object -Property OSDStatus,Catalog,CreationDate,KBNumber,Title,FileName,Size,FileUri,OriginUri,OSDGuid
-    }
-    if ($PackageName -like "Windows*") {
+    } else {
         $OSDUpdate = $OSDUpdate | Select-Object -Property OSDStatus,Catalog,UpdateOS,UpdateArch,UpdateBuild,CreationDate,KBNumber,Title,FileName,Size,FileUri,OriginUri,OSDGuid
     }
     if ($GridView.IsPresent) {$OSDUpdate = $OSDUpdate | Out-GridView -PassThru -Title "Select OSDUpdate Downloads to include in the Package"}
@@ -235,11 +244,7 @@ function New-OSDUpdatePackage {
                 Copy-Item -Path "$DownloadDirectory\$MspFile" "$OfficeSetupUpdatesPath\$MspFile" -Force
             }
         }
-    }
-    #===================================================================================================
-    #   Windows Download
-    #===================================================================================================
-    if ($PackageName -like "Windows*") {
+    } else {
         foreach ($Update in $OSDUpdate) {
             $UpdateFile = $($Update.FileName)
             $DownloadDirectory = "$PackagePath\$($Update.Title)"

@@ -6,7 +6,7 @@ Downloads the latest Microsoft Defender Definition Updates
 Downloads the latest Microsoft Defender Definition Updates
 
 .LINK
-https://www.osdeploy.com/osdupdate/docs/functions/get-downdefender
+https://www.osdeploy.com/osdupdate/functions/get-downdefender
 
 .PARAMETER OS
 Self Explanatory
