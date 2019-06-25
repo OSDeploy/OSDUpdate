@@ -106,7 +106,7 @@ PrivateData = @{
         # LicenseUri = ''
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://www.osdeploy.com/osdupdate/home'
+        ProjectUri = 'https://www.osdeploy.com/osdupdate'
 
         # A URL to an icon representing this module.
         # IconUri = ''
