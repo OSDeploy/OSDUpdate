@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.6.22.0'
+ModuleVersion = '19.6.25.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -26,7 +26,8 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
-Going forward OSDUpdate will focus on downloading individual Microsoft WSUS Updates or creating Microsoft WSUS Update Packages for use in OSD
+This release is considered a v2 with many changes that are not compatible with previous releases.
+The new focus of OSDUpdate is to allow individual Microsoft WSUS Updates to be downloaded, or creating Microsoft WSUS Update Packages for use in OSD
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module
@@ -99,7 +100,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('OSDeploy','OSD','Update','Windows10','Office365','Office2019','Office2016','Office2013','Office2010')
+        Tags = @('OSDeploy','OSDUpdate','OSD','Update','Windows10','Office365','Office2019','Office2016','Office2013','Office2010')
 
         # A URL to the license for this module.
         # LicenseUri = ''
