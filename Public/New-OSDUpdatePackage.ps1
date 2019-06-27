@@ -211,7 +211,9 @@ function New-OSDUpdatePackage {
     if ($PackageName -like "Office*") {
         foreach ($Update in $OSDUpdate) {
             $UpdateFile = $($Update.FileName)
+			$UpdateKB = $($Update.KBNumber)
             $MspFile = $UpdateFile -replace '.cab', '.msp'
+			$DestMspFile = $MspFile -replace '.msp', "-kb$UpdateKB.msp"
             $DownloadDirectory = "$PackagePath\$($Update.Title)"
 
             if (!(Test-Path "$DownloadDirectory")) {New-Item -Path "$DownloadDirectory" -ItemType Directory -Force | Out-Null}
@@ -240,8 +242,8 @@ function New-OSDUpdatePackage {
                 if (!(Test-Path "$OfficeSetupUpdatesPath")) {New-Item -Path "$OfficeSetupUpdatesPath" -ItemType Directory -Force | Out-Null}
                 Write-Host "Date Created: $($Update.CreationDate)" -ForegroundColor Gray
                 Write-Host "Source: $DownloadDirectory\$MspFile" -ForegroundColor Gray
-                Write-Host "Destination: $OfficeSetupUpdatesPath\$MspFile" -ForegroundColor Gray
-                Copy-Item -Path "$DownloadDirectory\$MspFile" "$OfficeSetupUpdatesPath\$MspFile" -Force
+                Write-Host "Destination: $OfficeSetupUpdatesPath\$DestMspFile" -ForegroundColor Gray
+                Copy-Item -Path "$DownloadDirectory\$MspFile" -Destination "$OfficeSetupUpdatesPath\$DestMspFile" -Force
             }
         }
     } else {
