@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.6.25.0'
+ModuleVersion = '19.6.27.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -26,10 +26,15 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
-This release is considered a v2 with many changes that are not compatible with previous releases.
-The new focus of OSDUpdate is to allow individual Microsoft WSUS Updates to be downloaded, or creating Microsoft WSUS Update Packages for use in OSD
-
 Guides: https://www.osdeploy.com/osdupdate/guides
+
+Latest Updates:
+2019-06 Cumulative Update for Windows 10 Version 1903 for x64-based Systems (KB4501375)
+2019-06 Servicing Stack Update for Windows 10 Version 1903 for x64-based Systems (KB4506933)
+2019-06 Cumulative Update for Windows 10 Version 1903 for x86-based Systems (KB4501375)
+2019-06 Servicing Stack Update for Windows 10 Version 1903 for x86-based Systems (KB4506933)
+2019-06 Cumulative Update for .NET Framework 3.5 and 4.8 for Windows 10 Version 1903 for x64 (KB4502584)
+2019-06 Cumulative Update for .NET Framework 3.5 and 4.8 for Windows 10 Version 1903 (KB4502584)
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module
