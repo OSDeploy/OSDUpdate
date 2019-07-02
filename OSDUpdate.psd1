@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.6.27.0'
+ModuleVersion = '19.7.2.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -29,12 +29,16 @@ Description = @'
 Guides: https://www.osdeploy.com/osdupdate/guides
 
 Latest Updates:
-2019-06 Cumulative Update for Windows 10 Version 1903 for x64-based Systems (KB4501375)
-2019-06 Servicing Stack Update for Windows 10 Version 1903 for x64-based Systems (KB4506933)
-2019-06 Cumulative Update for Windows 10 Version 1903 for x86-based Systems (KB4501375)
-2019-06 Servicing Stack Update for Windows 10 Version 1903 for x86-based Systems (KB4506933)
-2019-06 Cumulative Update for .NET Framework 3.5 and 4.8 for Windows 10 Version 1903 for x64 (KB4502584)
-2019-06 Cumulative Update for .NET Framework 3.5 and 4.8 for Windows 10 Version 1903 (KB4502584)
+Update for Microsoft Access 2016 (KB4462237)
+Update for Microsoft Filter Pack 2.0 (KB3114879)
+Update for Microsoft Office 2010 (KB3114397)
+Update for Microsoft Office 2016 (KB4032236)
+Update for Microsoft Office 2016 (KB4464582)
+Update for Microsoft Office 2016 (KB4464595)
+Update for Microsoft Office 2016 Language Interface Pack (KB4475515)
+Update for Microsoft Project 2016 (KB4475518)
+Update for Microsoft Word 2013 (KB4475525)
+Update for Microsoft Word 2016 (KB4475521)
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module

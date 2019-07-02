@@ -38,7 +38,7 @@ Displays the results in GridView with -PassThru
 function Get-DownOSDUpdate {
     [CmdletBinding()]
     PARAM (
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $true)]
         [string]$DownloadPath,
 
         [Parameter(ValueFromPipeline = $true)]
