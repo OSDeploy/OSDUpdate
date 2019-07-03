@@ -108,6 +108,7 @@ function New-OSDUpdatePackage {
     #===================================================================================================
     $OSDUpdate = @()
     $OSDUpdate = Get-OSDUpdate
+    Write-Host $PackageName -ForegroundColor Green
     #===================================================================================================
     #   Filter Catalog
     #===================================================================================================
@@ -159,18 +160,20 @@ function New-OSDUpdatePackage {
         $OSDUpdate = $CurrentUpdates
     }
     #===================================================================================================
-    #   Multi Existing Updates
+    #   Find Existing Updates
     #===================================================================================================
     $LocalUpdates = @()
     $LocalSuperseded = @()
 
     $LocalUpdates = Get-ChildItem -Path "$PackagePath\*" -Directory -Recurse | Select-Object -Property *
+    $LocalUpdatesMsp = Get-ChildItem -Path "$PackagePath\*" *.msp -File -Recurse | Select-Object -Property * | Sort-Object CreationDate -Descending
+    $LocalUpdatesXml = Get-ChildItem -Path "$PackagePath\*" *.xml -File -Recurse | Select-Object -Property * | Sort-Object CreationDate -Descending
 
     foreach ($Update in $LocalUpdates) {
-        if ($AllOSDUpdates.Title -NotContains $Update.Name) {$LocalSuperseded += $Update.FullName}
+        if ($CurrentUpdates.Title -NotContains $Update.Name) {$LocalSuperseded += $Update.FullName}
     }
     #===================================================================================================
-    #   Multi Superseded Updates
+    #   Remove Superseded Update Directories
     #===================================================================================================
     foreach ($Update in $LocalSuperseded) {
         if ($RemoveSuperseded.IsPresent) {
@@ -181,7 +184,32 @@ function New-OSDUpdatePackage {
         }
     }
     #===================================================================================================
-    #   Multi Get Downloaded Updates
+    #   Remove Superseded Update Files
+    #===================================================================================================
+    if ($PackageName -match 'Office') {
+        foreach ($Update in $SupersededUpdates) {
+            $SupersededMsp = "$PackagePath\$($Update.Title)\$([IO.Path]::GetFileNameWithoutExtension($Update.FileName)).msp"
+            $SupersededXml = "$PackagePath\$($Update.Title)\$([IO.Path]::GetFileNameWithoutExtension($Update.FileName)).xml"
+            if (Test-Path "$SupersededMsp") {
+                if ($RemoveSuperseded.IsPresent) {
+                    Write-Warning "Removing Superseded: $SupersededMsp"
+                    Remove-Item $SupersededMsp -Force | Out-Null
+                } else {
+                    Write-Warning "Superseded: $SupersededMsp"
+                }
+            }
+            if (Test-Path "$SupersededXml") {
+                if ($RemoveSuperseded.IsPresent) {
+                    Write-Warning "Removing Superseded: $SupersededXml"
+                    Remove-Item $SupersededXml -Force | Out-Null
+                } else {
+                    Write-Warning "Superseded: $SupersededXml"
+                }
+            }
+        }
+    }
+    #===================================================================================================
+    #   Get Downloaded Updates
     #===================================================================================================
     foreach ($Update in $OSDUpdate) {
         if ($PackageName -like "Windows*" -or $PackageName -eq 'Servicing Stacks') {
