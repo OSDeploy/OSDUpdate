@@ -22,6 +22,9 @@ Downloads Updates in the PackagePath in a PackageName subdirectory
 .PARAMETER GridView
 Displays the results in GridView with -PassThru.  Updates selected in GridView can be selected
 
+.PARAMETER HideDownloaded
+Hides downloaded updates from the results
+
 .PARAMETER OfficeProfile
 Downloads Office Updates with the selected Profile
 
@@ -78,6 +81,7 @@ function New-OSDUpdatePackage {
 
         [switch]$AppendPackageName,
         [switch]$GridView,
+        [switch]$HideDownloaded,
 
         [ValidateSet('Default','Proofing','Language','All')]
         [string]$OfficeProfile = 'Default',
@@ -89,12 +93,6 @@ function New-OSDUpdatePackage {
         [switch]$SkipUpdateScript
 
     )
-
-    #===================================================================================================
-    #   Get-OSDUpdate
-    #===================================================================================================
-    $OSDUpdate = @()
-    $OSDUpdate = Get-OSDUpdate
     #===================================================================================================
     #   AppendPackageName
     #===================================================================================================
@@ -106,9 +104,14 @@ function New-OSDUpdatePackage {
     #===================================================================================================
     if (!(Test-Path "$PackagePath")) {New-Item -Path "$PackagePath" -ItemType Directory -Force | Out-Null}
     #===================================================================================================
+    #   Get-OSDUpdate
+    #===================================================================================================
+    $OSDUpdate = @()
+    $OSDUpdate = Get-OSDUpdate
+    #===================================================================================================
     #   Filter Catalog
     #===================================================================================================
-    if ($PackageName -like "Office*") {
+    if ($PackageName -match 'Office') {
         $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $PackageName}
     }
 
@@ -124,6 +127,74 @@ function New-OSDUpdatePackage {
         }
         if ($PackageName -like "Windows Server 2019*") {
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 2019'}
+        }
+    }
+    #===================================================================================================
+    #   AllOSDUpdates
+    #===================================================================================================
+    $AllOSDUpdates = $OSDUpdate
+    #===================================================================================================
+    #   Office Superseded Updates
+    #===================================================================================================
+    if ($PackageName -match 'Office') {
+        $OSDUpdate = $OSDUpdate | Sort-Object OriginUri -Unique
+        $OSDUpdate = $OSDUpdate | Sort-Object CreationDate -Descending
+
+        $CurrentUpdates = @()
+        $SupersededUpdates = @()
+
+        foreach ($OfficeUpdate in $OSDUpdate) {
+            $SkipUpdate = $false
+
+            foreach ($CurrentUpdate in $CurrentUpdates) {
+                if ($($OfficeUpdate.FileName) -eq $($CurrentUpdate.FileName)) {$SkipUpdate = $true}
+            }
+
+            if ($SkipUpdate) {
+                $SupersededUpdates += $OfficeUpdate
+            } else {
+                $CurrentUpdates += $OfficeUpdate
+            }
+        }
+        $OSDUpdate = $CurrentUpdates
+    }
+    #===================================================================================================
+    #   Multi Existing Updates
+    #===================================================================================================
+    $LocalUpdates = @()
+    $LocalSuperseded = @()
+
+    $LocalUpdates = Get-ChildItem -Path "$PackagePath\*" -Directory -Recurse | Select-Object -Property *
+
+    foreach ($Update in $LocalUpdates) {
+        if ($AllOSDUpdates.Title -NotContains $Update.Name) {$LocalSuperseded += $Update.FullName}
+    }
+    #===================================================================================================
+    #   Multi Superseded Updates
+    #===================================================================================================
+    foreach ($Update in $LocalSuperseded) {
+        if ($RemoveSuperseded.IsPresent) {
+            Write-Warning "Removing Superseded: $Update"
+            Remove-Item $Update -Recurse -Force | Out-Null
+        } else {
+            Write-Warning "Superseded: $Update"
+        }
+    }
+    #===================================================================================================
+    #   Multi Get Downloaded Updates
+    #===================================================================================================
+    foreach ($Update in $OSDUpdate) {
+        if ($PackageName -like "Windows*" -or $PackageName -eq 'Servicing Stacks') {
+            $FullUpdatePath = "$PackagePath\$($Update.Title)\$($Update.FileName)"
+            if (Test-Path $FullUpdatePath) {
+                $Update.OSDStatus = 'Downloaded'
+            }
+        }
+        if ($PackageName -match 'Office') {
+            $FullUpdatePath = "$PackagePath\$($Update.Title)\$([IO.Path]::GetFileNameWithoutExtension($Update.FileName)).msp"
+            if (Test-Path $FullUpdatePath) {
+                $Update.OSDStatus = 'Downloaded'
+            }
         }
     }
     #===================================================================================================
@@ -160,40 +231,13 @@ function New-OSDUpdatePackage {
         }
     }
     #===================================================================================================
-    #   Multi Existing Updates
+    #   HideDownloaded
     #===================================================================================================
-    $ExistingUpdates = @()
-    $SupersededUpdates = @()
-
-    $ExistingUpdates = Get-ChildItem -Path "$PackagePath\*" -Directory -Recurse | Select-Object -Property *
-
-    foreach ($Update in $ExistingUpdates) {
-        if ($OSDUpdate.Title -NotContains $Update.Name) {$SupersededUpdates += $Update.FullName}
+    if ($HideDownloaded.IsPresent) {
+        $OSDUpdate = $OSDUpdate | Where-Object {$_.OSDStatus -ne 'Downloaded'}
     }
     #===================================================================================================
-    #   Multi Superseded Updates
-    #===================================================================================================
-    foreach ($Update in $SupersededUpdates) {
-        if ($RemoveSuperseded.IsPresent) {
-            Write-Warning "Removing Superseded: $Update"
-            Remove-Item $Update -Recurse -Force | Out-Null
-        } else {
-            Write-Warning "Superseded: $Update"
-        }
-    }
-    #===================================================================================================
-    #   Multi Get Downloaded Updates
-    #===================================================================================================
-    foreach ($Update in $OSDUpdate) {
-        if ($PackageName -like "Windows*" -or $PackageName -eq 'Servicing Stacks') {
-            $FullUpdatePath = "$PackagePath\$($Update.Title)\$($Update.FileName)"
-            if (Test-Path $FullUpdatePath) {
-                $Update.OSDStatus = "Downloaded"
-            }
-        }
-    }
-    #===================================================================================================
-    #   Multi GridView
+    #   GridView
     #===================================================================================================
     if ($PackageName -like "Office*") {
         $OSDUpdate = $OSDUpdate | Select-Object -Property OSDStatus,Catalog,CreationDate,KBNumber,Title,FileName,Size,FileUri,OriginUri,OSDGuid

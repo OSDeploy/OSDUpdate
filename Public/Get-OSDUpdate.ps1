@@ -24,7 +24,11 @@ function Get-OSDUpdate {
     #===================================================================================================
     #   Update Information
     #===================================================================================================
-    if (!($Silent.IsPresent)) {Write-Warning "Updates are Current as of July 2, 2019"}
+    if (!($Silent.IsPresent)) {
+        Write-Verbose 'Updates are Current as of July 2, 2019' -Verbose
+        Write-Verbose 'Gathering Updates ... Please Wait ...' -Verbose
+
+    }
     #===================================================================================================
     #   Variables
     #===================================================================================================
@@ -37,6 +41,37 @@ function Get-OSDUpdate {
     #   Import Catalog XML Files
     #===================================================================================================
     foreach ($OSDUpdateCatalog in $OSDUpdateCatalogs) {
+<#         #Write-Verbose "Importing $($OSDUpdateCatalog.Name)" -Verbose
+        if ($OSDUpdateCatalog.Name -match 'Office') {
+
+            $OfficeUpdates = @()
+            $OfficeUpdates = Import-Clixml -Path "$($OSDUpdateCatalog.FullName)"
+
+            $OfficeUpdates = $OfficeUpdates | Sort-Object OriginUri -Unique
+            $OfficeUpdates = $OfficeUpdates | Sort-Object CreationDate -Descending
+
+            #$OfficeUpdates | Out-GridView
+
+            $CurrentUpdates = @()
+            $SupersededUpdates = @()
+
+            foreach ($OfficeUpdate in $OfficeUpdates) {
+                $SkipUpdate = $false
+    
+                foreach ($CurrentUpdate in $CurrentUpdates) {
+                    if ($($OfficeUpdate.FileName) -eq $($CurrentUpdate.FileName)) {$SkipUpdate = $true}
+                }
+    
+                if ($SkipUpdate) {
+                    $SupersededUpdates += $OfficeUpdate
+                } else {
+                    $CurrentUpdates += $OfficeUpdate
+                }
+            }
+            $OSDUpdate += $CurrentUpdates
+        } else {
+            $OSDUpdate += Import-Clixml -Path "$($OSDUpdateCatalog.FullName)"
+        } #>
         $OSDUpdate += Import-Clixml -Path "$($OSDUpdateCatalog.FullName)"
     }
     #===================================================================================================
