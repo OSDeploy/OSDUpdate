@@ -16,8 +16,6 @@
 #======================================================================================
 #   Validate Admin Rights
 #======================================================================================
-Write-Host ""
-# Verify Running as Admin
 $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 If (!( $isAdmin )) {
     Write-Host "Checking User Account Control settings ..." -ForegroundColor Green
