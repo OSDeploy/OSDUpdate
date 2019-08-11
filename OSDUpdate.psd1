@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.7.10.0'
+ModuleVersion = '19.8.11.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -27,24 +27,6 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 # Description of the functionality provided by this module
 Description = @'
 Guides: https://www.osdeploy.com/osdupdate/guides
-
-Latest Updates:
-Security Update for Microsoft Excel 2010 (KB4464572)
-Security Update for Microsoft Excel 2013 (KB4464565)
-Security Update for Microsoft Excel 2016 (KB4475513)
-Security Update for Microsoft Office 2010 (KB4462224)
-Security Update for Microsoft Office 2013 (KB4018375)
-Security Update for Microsoft Office 2013 (KB4464543)
-Security Update for Microsoft Office 2013 (KB4464558)
-Security Update for Microsoft Office 2016 (KB4461539)
-Security Update for Microsoft Office 2016 (KB4464534)
-Security Update for Microsoft Office 2016 (KB4475514)
-Security Update for Microsoft Outlook 2010 (KB4475509)
-Security Update for Microsoft Outlook 2013 (KB4464592)
-Security Update for Microsoft Outlook 2016 (KB4475517)
-Security Update for Skype for Business 2015 (KB4475519)
-Security Update for Skype for Business 2016 (KB4475545)
-
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module
