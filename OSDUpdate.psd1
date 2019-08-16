@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.8.13.0'
+ModuleVersion = '19.8.15.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -26,7 +26,8 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
-Guides: https://www.osdeploy.com/osdupdate/guides
+My Birthday Update
+OSDUpdate has moved to https://osdupdate.osdeploy.com/
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module
@@ -105,13 +106,13 @@ PrivateData = @{
         # LicenseUri = ''
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://www.osdeploy.com/osdupdate'
+        ProjectUri = 'https://osdupdate.osdeploy.com/'
 
         # A URL to an icon representing this module.
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'https://www.osdeploy.com/osdupdate/releases'
+        ReleaseNotes = 'https://osdupdate.osdeploy.com/release'
 
     } # End of PSData hashtable
 

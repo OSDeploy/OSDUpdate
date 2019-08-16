@@ -6,7 +6,7 @@ Returns an Array of Microsoft Updates
 Returns an Array of Microsoft Updates contained in the local WSUS Catalogs
 
 .LINK
-https://www.osdeploy.com/osdupdate/functions/get-osdupdate
+https://osdupdate.osdeploy.com/module/functions/get-osdupdate
 
 .PARAMETER GridView
 Displays the results in GridView with -PassThru
@@ -25,7 +25,7 @@ function Get-OSDUpdate {
     #   Update Information
     #===================================================================================================
     if (!($Silent.IsPresent)) {
-        Write-Verbose 'Updates are Current as of July 9, 2019' -Verbose
+        Write-Verbose 'Updates are Current as of July 15, 2019' -Verbose
         Write-Verbose 'Gathering Updates ... Please Wait ...' -Verbose
 
     }

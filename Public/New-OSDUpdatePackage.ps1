@@ -8,7 +8,7 @@ Requires BITS for downloading the updates
 Requires Internet access for downloading the updates
 
 .LINK
-https://www.osdeploy.com/osdupdate/functions/new-osdupdatepackage
+https://osdupdate.osdeploy.com/module/functions/new-osdupdatepackage
 
 .PARAMETER PackagePath
 Package Content will be downloaded into the PackagePath

@@ -8,7 +8,7 @@ Requires BITS for downloading the updates
 Requires Internet access for downloading the updates
 
 .LINK
-https://www.osdeploy.com/osdupdate/functions/get-downosdupdate
+https://osdupdate.osdeploy.com/module/functions/get-downosdupdate
 
 .PARAMETER DownloadPath
 Directory of the Downloads

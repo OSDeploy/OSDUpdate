@@ -6,7 +6,7 @@ Updates the OSDUpdate PowerShell Module to the latest version
 Updates the OSDUpdate PowerShell Module to the latest version from the PowerShell Gallery
 
 .LINK
-https://www.osdeploy.com/osdupdate/functions/update-moduleosdupdate
+https://osdupdate.osdeploy.com/module/functions/update-moduleosdupdate
 
 .Example
 Update-ModuleOSDUpdate
