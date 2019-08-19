@@ -25,7 +25,7 @@ function Get-OSDUpdate {
     #   Update Information
     #===================================================================================================
     if (!($Silent.IsPresent)) {
-        Write-Verbose 'Updates are Current as of July 15, 2019' -Verbose
+        #Write-Verbose 'Updates are Current as of August 19, 2019' -Verbose
         Write-Verbose 'Gathering Updates ... Please Wait ...' -Verbose
 
     }
