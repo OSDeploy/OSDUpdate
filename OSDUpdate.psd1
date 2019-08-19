@@ -26,8 +26,15 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
-My Birthday Update
-OSDUpdate has moved to https://osdupdate.osdeploy.com/
+OSDUpdate https://osdupdate.osdeploy.com/
+
+Latest Microsoft Updates:
+https://raw.githubusercontent.com/OSDeploy/OSDUpdate/master/UPDATES.md
+
+WSUS Update Catalogs:
+These are contained within this PowerShell Module, so regular Module updating is needed to
+ensure you receive the latest Microsoft Updates.  Updates published in WSUS will be different
+from Microsoft Update Catalog website due to Preview Releases
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module
