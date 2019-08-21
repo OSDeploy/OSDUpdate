@@ -2,10 +2,8 @@ $AllOSDUpdates = @()
 $AllUpdateCatalogs = Get-ChildItem -Path "$PSScriptRoot\*" -Include '*.xml'
 foreach ($UpdateCatalog in $AllUpdateCatalogs) {$AllOSDUpdates += Import-Clixml -Path "$($UpdateCatalog.FullName)"}
 
-$AllOSDUpdates = $AllOSDUpdates | Select-Object -Property * | Sort-Object CreationDate -Descending | Out-GridView -PassThru -Title "All OSDUpdates"
+$AllOSDUpdates = $AllOSDUpdates | Select-Object -Property * | Sort-Object -Property Title -Unique | Sort-Object CreationDate -Descending | Out-GridView -PassThru -Title "All OSDUpdates"
 Write-Host ""
-$AllOSDUpdates = $AllOSDUpdates | Select-Object -Property Title
-$AllOSDUpdates | Sort-Object Title -Unique | Format-Table
+$AllOSDUpdates | Select-Object -Property CreationDate, KBNumber, Title | Format-Table
 
-Write-Host ""
 Pause
