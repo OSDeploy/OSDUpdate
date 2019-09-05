@@ -135,13 +135,13 @@ function New-OSDUpdatePackage {
     #===================================================================================================
     $AllOSDUpdates = $OSDUpdate
     #===================================================================================================
-    #   Office Superseded Updates
+    #   Superseded Updates
     #===================================================================================================
+    $CurrentUpdates = @()
     if ($PackageName -match 'Office') {
         $OSDUpdate = $OSDUpdate | Sort-Object OriginUri -Unique
         $OSDUpdate = $OSDUpdate | Sort-Object CreationDate -Descending
 
-        $CurrentUpdates = @()
         $SupersededUpdates = @()
 
         foreach ($OfficeUpdate in $OSDUpdate) {
@@ -158,6 +158,8 @@ function New-OSDUpdatePackage {
             }
         }
         $OSDUpdate = $CurrentUpdates
+    } else {
+        $CurrentUpdates = $OSDUpdate
     }
     #===================================================================================================
     #   Find Existing Updates
