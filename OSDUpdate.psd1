@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.9.5.1'
+ModuleVersion = '19.9.10.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -56,7 +56,9 @@ PowerShellVersion = '5.0'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-# RequiredModules = @()
+RequiredModules = @(
+    @{ModuleName='OSDSUS'; ModuleVersion = '19.9.9.0'; Guid="065cf035-da73-4d17-8745-f55116b82fb5"}
+)
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
@@ -71,7 +73,9 @@ PowerShellVersion = '5.0'
 # FormatsToProcess = @()
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-# NestedModules = @()
+#NestedModules = @(
+#    @{ModuleName="OSDSUS"; ModuleVersion = '19.9.10.0'; Guid="065cf035-da73-4d17-8745-f55116b82fb5"}
+#)
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = 'Get-OSDUpdate',
@@ -120,6 +124,8 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = 'https://osdupdate.osdeploy.com/release'
+
+        ExternalModuleDependencies = @('OSDSUS')
 
     } # End of PSData hashtable
 
