@@ -1,4 +1,4 @@
-﻿$Catalog = Import-Clixml "D:\GitHub\Modules\OSDBuilder\Catalogs\Windows Server 2016.xml"
+﻿$Catalog = Import-Clixml "$PSScriptRoot\Windows Server 2016.xml"
 $CatalogErrors = @()
 $CatalogCorrections = @()
 
