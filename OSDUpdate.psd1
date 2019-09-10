@@ -57,7 +57,7 @@ PowerShellVersion = '5.0'
 
 # Modules that must be imported into the global environment prior to importing this module
 RequiredModules = @(
-    @{ModuleName='OSDSUS'; ModuleVersion = '19.9.9.0'; Guid="065cf035-da73-4d17-8745-f55116b82fb5"}
+    @{ModuleName='OSDSUS'; ModuleVersion = '19.9.10.0'; Guid="065cf035-da73-4d17-8745-f55116b82fb5"}
 )
 
 # Assemblies that must be loaded prior to importing this module
@@ -111,7 +111,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('OSDeploy','OSDUpdate','OSD','Update','Windows10','Office365','Office2019','Office2016','Office2013','Office2010')
+        Tags = @('OSDeploy','OSDUpdate','OSDSUS','OSD','Update','Windows10','Office365','Office2019','Office2016','Office2013','Office2010')
 
         # A URL to the license for this module.
         # LicenseUri = ''
@@ -125,7 +125,7 @@ PrivateData = @{
         # ReleaseNotes of this module
         ReleaseNotes = 'https://osdupdate.osdeploy.com/release'
 
-        ExternalModuleDependencies = @('OSDSUS')
+        #ExternalModuleDependencies = @('OSDSUS')
 
     } # End of PSData hashtable
 
