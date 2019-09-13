@@ -26,10 +26,10 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
-19.9.12: OSDSUS Update
+19.9.12: Modified OSDSUS parameters
 19.9.10: Added OSDSUS requirement
 
-Requires OSDSUS 19.9.11.0
+Requires OSDSUS 19.9.12.0
 
 OSDUpdate https://osdupdate.osdeploy.com/
 
@@ -62,7 +62,7 @@ PowerShellVersion = '5.0'
 
 # Modules that must be imported into the global environment prior to importing this module
 RequiredModules = @(
-    @{ModuleName='OSDSUS'; ModuleVersion = '19.9.11.0'; Guid="065cf035-da73-4d17-8745-f55116b82fb5"}
+    @{ModuleName='OSDSUS'; ModuleVersion = '19.9.12.0'; Guid="065cf035-da73-4d17-8745-f55116b82fb5"}
 )
 
 # Assemblies that must be loaded prior to importing this module
