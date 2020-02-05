@@ -116,13 +116,13 @@ PrivateData = @{
         Tags = @('OSDeploy','OSDUpdate','OSDSUS','OSD','Update','Windows10','Office365','Office2019','Office2016','Office2013','Office2010')
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/OSDeploy/OSDUpdate/blob/master/LICENSE'
 
         # A URL to the main website for this project.
         ProjectUri = 'https://osdupdate.osdeploy.com/'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://raw.githubusercontent.com/OSDeploy/OSDUpdate/master/OSDUpdate.png'
 
         # ReleaseNotes of this module
         ReleaseNotes = 'https://osdupdate.osdeploy.com/release'
