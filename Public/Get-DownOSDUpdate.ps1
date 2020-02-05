@@ -62,7 +62,7 @@ function Get-DownOSDUpdate {
         [ValidateSet ('x64','x86')]
         [string]$UpdateArch,
 
-        [ValidateSet (1903,1809,1803,1709,1703,1607,1511,1507)]
+        [ValidateSet (1909,1903,1809,1803,1709,1703,1607,1511,1507)]
         [string]$UpdateBuild,
 
         [switch]$GridView
@@ -108,6 +108,7 @@ function Get-DownOSDUpdate {
         if ($UpdateBuild -eq '1803') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1803'}}
         if ($UpdateBuild -eq '1809') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1809'}}
         if ($UpdateBuild -eq '1903') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1903'}}
+        if ($UpdateBuild -eq '1909') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1909'}}
         #===================================================================================================
         #   GridView
         #===================================================================================================

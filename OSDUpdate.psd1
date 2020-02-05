@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '19.9.12.0'
+ModuleVersion = '20.2.5.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -26,10 +26,7 @@ Copyright = '(c) 2019 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
-19.9.12: Modified OSDSUS parameters
-19.9.10: Added OSDSUS requirement
-
-Requires OSDSUS 19.9.12.0
+Requires OSDSUS 19.9.12.0 or newer
 
 OSDUpdate https://osdupdate.osdeploy.com/
 

@@ -66,9 +66,11 @@ function New-OSDUpdatePackage {
             'Windows 10 x64 1803',
             'Windows 10 x64 1809',
             'Windows 10 x64 1903',
+            'Windows 10 x64 1909',
             'Windows 10 x86 1803',
             'Windows 10 x86 1809',
             'Windows 10 x86 1903',
+            'Windows 10 x86 1909',
             'Windows Server 2016 1607',
             'Windows Server 2016 1709',
             'Windows Server 2016 1803',
@@ -245,6 +247,7 @@ function New-OSDUpdatePackage {
         if ($PackageName -like "*1803*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1803'}}
         if ($PackageName -like "*1809*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1809'}}
         if ($PackageName -like "*1903*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1903'}}
+        if ($PackageName -like "*1909*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1909'}}
     }
     $OSDUpdate | Export-Clixml -Path "$PackagePath\OSDUpdatePackage.xml" -Force | Out-Null
 
