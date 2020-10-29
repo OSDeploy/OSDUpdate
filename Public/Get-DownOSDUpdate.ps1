@@ -62,8 +62,11 @@ function Get-DownOSDUpdate {
         [ValidateSet ('x64','x86')]
         [string]$UpdateArch,
 
-        [ValidateSet (2004,1909,1903,1809,1803,1709,1703,1607,1511,1507)]
+        [ValidateSet ('20H2',2009,2004,1909,1903,1809,1803,1709,1703,1607,1511,1507)]
         [string]$UpdateBuild,
+
+        [ValidateSet ('AdobeSU','LCU','SSU','DotNet','DotNetCU','Optional')]
+        [string]$UpdateGroup,
 
         [switch]$GridView
     )
@@ -110,6 +113,12 @@ function Get-DownOSDUpdate {
         if ($UpdateBuild -eq '1903') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1903'}}
         if ($UpdateBuild -eq '1909') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1909'}}
         if ($UpdateBuild -eq '2004') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2004'}}
+        if ($UpdateBuild -eq '2009') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2009'}}
+        if ($UpdateBuild -eq '20H2') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2009'}}
+        #===================================================================================================
+        #   UpdateGroup
+        #===================================================================================================
+        if ($UpdateGroup) {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateGroup -eq $UpdateGroup}}
         #===================================================================================================
         #   GridView
         #===================================================================================================

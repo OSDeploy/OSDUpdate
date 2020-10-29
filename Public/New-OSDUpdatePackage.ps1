@@ -68,11 +68,15 @@ function New-OSDUpdatePackage {
             'Windows 10 x64 1903',
             'Windows 10 x64 1909',
             'Windows 10 x64 2004',
+            'Windows 10 x64 2009',
+            'Windows 10 x64 20H2',
             'Windows 10 x86 1803',
             'Windows 10 x86 1809',
             'Windows 10 x86 1903',
             'Windows 10 x86 1909',
             'Windows 10 x86 2004',
+            'Windows 10 x86 2009',
+            'Windows 10 x86 20H2',
             'Windows Server 2016 1607',
             'Windows Server 2016 1709',
             'Windows Server 2016 1803',
@@ -80,6 +84,8 @@ function New-OSDUpdatePackage {
             'Windows Server 2019 1903',
             'Windows Server 2019 1909',
             'Windows Server 2019 2004',
+            'Windows Server 2019 2009',
+            'Windows Server 2019 20H2',
             #================================
             #   Other
             #================================
@@ -254,6 +260,8 @@ function New-OSDUpdatePackage {
         if ($PackageName -like "*1903*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1903'}}
         if ($PackageName -like "*1909*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1909'}}
         if ($PackageName -like "*2004*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2004'}}
+        if ($PackageName -like "*2009*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2009'}}
+        if ($PackageName -like "*20H2*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2009'}}
     }
     $OSDUpdate | Export-Clixml -Path "$PackagePath\OSDUpdatePackage.xml" -Force | Out-Null
 
