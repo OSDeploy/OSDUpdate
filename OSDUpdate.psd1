@@ -26,6 +26,7 @@ Copyright = '(c) 2020 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
+Added support for Windows 10 20H2
 Requires OSDSUS 19.9.12.0 or newer
 
 OSDUpdate https://osdupdate.osdeploy.com/
