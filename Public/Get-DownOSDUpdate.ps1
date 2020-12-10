@@ -55,7 +55,8 @@ function Get-DownOSDUpdate {
             'Windows 10',
             'Windows Server 2012 R2',
             'Windows Server 2016',
-            'Windows Server 2019')]
+            'Windows Server 2019',
+            'Windows Server 1903 and Later')]
         [Alias('CatalogOffice','CatalogWindows')]
         [string]$Catalog,
 

@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '20.10.29.1'
+ModuleVersion = '20.12.10.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -26,8 +26,9 @@ Copyright = '(c) 2020 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
-Added support for Windows 10 20H2
-Requires OSDSUS 19.9.12.0 or newer
+Added support for Windows Server SAC
+
+Requires OSDSUS 20.12.10.1 or newer
 
 OSDUpdate https://osdupdate.osdeploy.com/
 
@@ -60,7 +61,7 @@ PowerShellVersion = '5.0'
 
 # Modules that must be imported into the global environment prior to importing this module
 RequiredModules = @(
-    @{ModuleName='OSDSUS'; ModuleVersion = '19.9.12.0'; Guid="065cf035-da73-4d17-8745-f55116b82fb5"}
+    @{ModuleName='OSDSUS'; ModuleVersion = '20.12.10.1'; Guid="065cf035-da73-4d17-8745-f55116b82fb5"}
 )
 
 # Assemblies that must be loaded prior to importing this module
@@ -123,7 +124,7 @@ PrivateData = @{
         ProjectUri = 'https://osdupdate.osdeploy.com/'
 
         # A URL to an icon representing this module.
-        IconUri = 'https://raw.githubusercontent.com/OSDeploy/OSDUpdate/master/OSDUpdate.png'
+        IconUri = 'https://raw.githubusercontent.com/OSDeploy/OSDUpdate/master/OSD.png'
 
         # ReleaseNotes of this module
         ReleaseNotes = 'https://osdupdate.osdeploy.com/release'

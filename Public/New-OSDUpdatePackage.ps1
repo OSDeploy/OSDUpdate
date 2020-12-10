@@ -81,11 +81,11 @@ function New-OSDUpdatePackage {
             'Windows Server 2016 1709',
             'Windows Server 2016 1803',
             'Windows Server 2019 1809',
-            'Windows Server 2019 1903',
-            'Windows Server 2019 1909',
-            'Windows Server 2019 2004',
-            'Windows Server 2019 2009',
-            'Windows Server 2019 20H2',
+            'Windows Server SAC 1809',
+            'Windows Server SAC 1903',
+            'Windows Server SAC 1909',
+            'Windows Server SAC 2004',
+            'Windows Server SAC 20H2',
             #================================
             #   Other
             #================================
@@ -132,15 +132,16 @@ function New-OSDUpdatePackage {
     if ($PackageName -like "Windows*") {
         if ($PackageName -like "Windows 7*") {
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows 7'}
-        }
-        if ($PackageName -like "Windows 10*") {
+        } elseif ($PackageName -like "Windows 10*") {
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows 10'}
-        }
-        if ($PackageName -like "Windows Server 2016*") {
+        } elseif ($PackageName -like "Windows Server 2016*") {
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 2016'}
-        }
-        if ($PackageName -like "Windows Server 2019*") {
+        } elseif ($PackageName -like "Windows Server 2019*") {
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 2019'}
+        } elseif ($PackageName -match "Windows Server SAC 1809") {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 2019'}
+        } elseif ($PackageName -match "Windows Server SAC") {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 1903 and Later'}
         }
     }
     #===================================================================================================
