@@ -1,4 +1,19 @@
-#   This script is only configured to install SuperDAT v2 renamed to xdat.exe
+#Requires -Version 5
+
+<#
+.SYNOPSIS
+    Installs Updates in an OSDUpdate Package from Child Directories
+
+.DESCRIPTION
+    Installs Updates in an OSDUpdate Package from Child Directories
+
+.NOTES
+    Author:         David Segura
+    Website:        osdeploy.com
+    Twitter:        @SeguraOSD
+    Version:        20.1.5.1
+    This script is only configured to install SuperDAT v2 renamed to xdat.exe
+#>
 #======================================================================================
 #   Begin
 #======================================================================================
@@ -15,11 +30,11 @@ If ($null -eq $Installed) {
     Write-Warning "McAfee VirusScan is not installed"
 } else {
     Write-Host "Installing McAfee xDAT" -ForegroundColor Cyan
-    if (!(Test-Path "$env:SystemRoot\OEM\McAfee\xDAT")) {
-        New-Item "$env:SystemRoot\OEM\McAfee\xDAT" -ItemType Directory -Force | Out-Null
+    if (!(Test-Path "$env:Temp\McAfee\xDAT")) {
+        New-Item "$env:Temp\McAfee\xDAT" -ItemType Directory -Force | Out-Null
     }
-    Copy-Item "$PSScriptRoot\xdat.exe" "$env:SystemRoot\OEM\McAfee\xDAT" -Force | Out-Null
-    Start-Process "$env:SystemRoot\OEM\McAfee\xDAT\xdat.exe" -ArgumentList '/SILENT','/F'
+    Copy-Item "$PSScriptRoot\xdat.exe" "$env:Temp\McAfee\xDAT" -Force | Out-Null
+    Start-Process "$env:Temp\McAfee\xDAT\xdat.exe" -ArgumentList '/SILENT','/F' -Wait
 }
 #======================================================================================
 #   Complete
