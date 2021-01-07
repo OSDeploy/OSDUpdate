@@ -11,7 +11,7 @@
     Author:         David Segura
     Website:        osdeploy.com
     Twitter:        @SeguraOSD
-    Version:        19.6.25.0
+    Version:        21.1.7.2
 #>
 
 function Convert-GuidToCompressedGuid {
@@ -155,9 +155,24 @@ If (!( $isAdmin )) {
     Write-Host '========================================================================================' -ForegroundColor DarkGray
 }
 #======================================================================================
-#   Begin
+#   Script Information
 #======================================================================================
-Write-Host "Install-OSDUpdate Package" -ForegroundColor Green
+$Invocation = (Get-Variable MyInvocation -Scope Script).Value
+$ScriptPath = Split-Path -Parent $Invocation.MyCommand.Path
+$ParentName = Split-Path $ScriptPath -Leaf
+#======================================================================================
+#   Logs
+#======================================================================================
+$OSDAppName = "OSDUpdate-$ParentName"
+$OSDLogs = "$env:Temp"
+if (!(Test-Path $OSDLogs)) {New-Item $OSDLogs -ItemType Directory -Force | Out-Null}
+$OSDLogName = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-$OSDAppName.log"
+Start-Transcript -Path (Join-Path $OSDLogs $OSDLogName)
+#======================================================================================
+#   Start Script
+#======================================================================================
+Write-Host "Start ... $(Join-Path $PSScriptRoot $MyInvocation.MyCommand.Name)" -ForegroundColor Green
+Write-Host ""
 #======================================================================================
 #   OS Information
 #======================================================================================
@@ -176,10 +191,9 @@ if ($OSVersion -Like "10*") {
     Write-Host "OS Release ID: $OSReleaseID" -ForegroundColor Cyan
 }
 #======================================================================================
-#   Script Information
+#   Begin
 #======================================================================================
-$Invocation = (Get-Variable MyInvocation -Scope Script).Value
-$ScriptPath = Split-Path -Parent $Invocation.MyCommand.Path
+Write-Host "Install-OSDUpdate Package" -ForegroundColor Green
 #======================================================================================
 #   Get OSDUpdate Package Catalog
 #======================================================================================
@@ -285,6 +299,10 @@ if ($Catalog -like "Windows*") {
     $Sessions = $Sessions | Where-Object {$_.Id -like "Package*"}
     $Sessions = $Sessions | Select-Object -Property Id, KBNumber, TargetState, Client, Status, Complete | Sort-Object Complete -Descending
     #======================================================================================
+    #   Sort Updates
+    #======================================================================================
+    $Updates = $Updates | Sort-Object -Property CreationDate
+    #======================================================================================
     #   Architecture
     #======================================================================================
     if ($OSArchitecture -like "*64*") {$Updates = $Updates | Where-Object {$_.UpdateArch -eq 'x64'}}
@@ -340,3 +358,10 @@ if ($Catalog -like "Windows*") {
         }
     }
 }
+#======================================================================================
+#   Complete
+#======================================================================================
+Write-Host ""
+Write-Host "Complete ... $(Join-Path $PSScriptRoot $MyInvocation.MyCommand.Name)" -ForegroundColor Green
+Stop-Transcript
+Start-Sleep 5
