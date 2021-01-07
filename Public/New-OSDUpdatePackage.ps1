@@ -147,7 +147,7 @@ function New-OSDUpdatePackage {
         #===================================================================================================
         if (!($SkipInstallScript)) {
             Write-Host "Install Script: $PackagePath\Install-OSDUpdatePackage.ps1" -ForegroundColor Green
-            Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdatePackage.ps1" "$PackagePath" -Force | Out-Null
+            Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdateMcAfee.ps1" "$PackagePath\Install-OSDUpdatePackage.ps1" -Force | Out-Null
         }
         #===================================================================================================
         #   Update Script
@@ -170,7 +170,7 @@ function New-OSDUpdatePackage {
         #===================================================================================================
         if (!($SkipInstallScript)) {
             Write-Host "Install Script: $PackagePath\Install-OSDUpdatePackage.ps1" -ForegroundColor Green
-            Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdatePackage.ps1" "$PackagePath" -Force | Out-Null
+            Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdateDefender.ps1" "$PackagePath\Install-OSDUpdatePackage.ps1" -Force | Out-Null
         }
         #===================================================================================================
         #   Update Script
@@ -190,7 +190,7 @@ function New-OSDUpdatePackage {
         #===================================================================================================
         if (!($SkipInstallScript)) {
             Write-Host "Install Script: $PackagePath\Install-OSDUpdatePackage.ps1" -ForegroundColor Green
-            Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdatePackage.ps1" "$PackagePath" -Force | Out-Null
+            Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdateDefender.ps1" "$PackagePath\Install-OSDUpdatePackage.ps1" -Force | Out-Null
         }
         #===================================================================================================
         #   Update Script
