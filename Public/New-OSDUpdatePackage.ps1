@@ -70,6 +70,7 @@ function New-OSDUpdatePackage {
             'Windows 10 x64 2004',
             'Windows 10 x64 2009',
             'Windows 10 x64 20H2',
+            'Windows 10 x64 21H1',
             'Windows 10 x86 1803',
             'Windows 10 x86 1809',
             'Windows 10 x86 1903',
@@ -77,6 +78,7 @@ function New-OSDUpdatePackage {
             'Windows 10 x86 2004',
             'Windows 10 x86 2009',
             'Windows 10 x86 20H2',
+            'Windows 10 x86 21H1',
             'Windows Server 2016 1607',
             'Windows Server 2016 1709',
             'Windows Server 2016 1803',
@@ -86,6 +88,7 @@ function New-OSDUpdatePackage {
             'Windows Server SAC 1909',
             'Windows Server SAC 2004',
             'Windows Server SAC 20H2',
+            'Windows Server SAC 21H1',
             #================================
             #   Other
             #================================
@@ -113,7 +116,6 @@ function New-OSDUpdatePackage {
     #   AppendPackageName
     #===================================================================================================
     if ($AppendPackageName) {
-
         #===================================================================================================
         #   Copy Script
         #===================================================================================================
@@ -333,20 +335,25 @@ function New-OSDUpdatePackage {
         }
 
         if ($PackageName -like "Windows*") {
-            if ($PackageName -like "*x64*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateArch -eq 'x64'}}
-            if ($PackageName -like "*x86*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateArch -eq 'x86'}}
-            if ($PackageName -like "*1507*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1507'}}
-            if ($PackageName -like "*1511*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1511'}}
-            if ($PackageName -like "*1607*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1607'}}
-            if ($PackageName -like "*1703*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1703'}}
-            if ($PackageName -like "*1709*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1709'}}
-            if ($PackageName -like "*1803*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1803'}}
-            if ($PackageName -like "*1809*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1809'}}
-            if ($PackageName -like "*1903*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1903'}}
-            if ($PackageName -like "*1909*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1909'}}
-            if ($PackageName -like "*2004*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2004'}}
-            if ($PackageName -like "*2009*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2009'}}
-            if ($PackageName -like "*20H2*") {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2009'}}
+            if ($PackageName -match 'x64') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateArch -eq 'x64'}}
+            if ($PackageName -match 'x86') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateArch -eq 'x86'}}
+
+            if ($PackageName -match '1507') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1507'}}
+            if ($PackageName -match '1511') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1511'}}
+            if ($PackageName -match '1607') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1607'}}
+            if ($PackageName -match '1703') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1703'}}
+            if ($PackageName -match '1709') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1709'}}
+            if ($PackageName -match '1803') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1803'}}
+            if ($PackageName -match '1809') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1809'}}
+            if ($PackageName -match '1903') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1903'}}
+            if ($PackageName -match '1909') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1909'}}
+            if ($PackageName -match '2004') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2004'}}
+
+            if (($PackageName -match '2009') -or ($PackageName -match '20H2')) {
+                $OSDUpdate = $OSDUpdate | Where-Object {($_.UpdateBuild -eq '1909') -or ($_.UpdateBuild -eq '20H2')}
+            }
+            
+            if ($PackageName -match '21H1') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '21H1'}}
         }
         $OSDUpdate | Export-Clixml -Path "$PackagePath\OSDUpdatePackage.xml" -Force | Out-Null
 
@@ -374,7 +381,7 @@ function New-OSDUpdatePackage {
         if ($PackageName -like "Office*") {
             $OSDUpdate = $OSDUpdate | Select-Object -Property OSDStatus,Catalog,CreationDate,KBNumber,Title,FileName,Size,FileUri,OriginUri,OSDGuid
         } else {
-            $OSDUpdate = $OSDUpdate | Select-Object -Property OSDStatus,Catalog,UpdateOS,UpdateArch,UpdateBuild,CreationDate,KBNumber,Title,FileName,Size,FileUri,OriginUri,OSDGuid
+            $OSDUpdate = $OSDUpdate | Select-Object -Property OSDStatus,Catalog,UpdateOS,UpdateGroup,UpdateArch,UpdateBuild,CreationDate,KBNumber,Title,FileName,Size,FileUri,OriginUri,OSDGuid
         }
         if ($GridView.IsPresent) {$OSDUpdate = $OSDUpdate | Out-GridView -PassThru -Title "Select OSDUpdate Downloads to include in the Package"}
         #===================================================================================================
@@ -382,60 +389,67 @@ function New-OSDUpdatePackage {
         #===================================================================================================
         $OSDUpdate = $OSDUpdate | Sort-Object DateCreated
         #===================================================================================================
-        #   Office Download
+        #   Download
         #===================================================================================================
-        if ($PackageName -like "Office*") {
-            foreach ($Update in $OSDUpdate) {
-                $UpdateFile = $($Update.FileName)
+        foreach ($Update in $OSDUpdate) {
+            $UpdateFile = ($Update).FileName
+            $UpdateGroup = ($Update).UpdateGroup
+            $UpdateTitle = ($Update).Title
+
+            $DownloadDirectory = Join-Path $PackagePath $UpdateTitle
+            if (-NOT (Test-Path $DownloadDirectory)) {
+                New-Item -Path $DownloadDirectory -ItemType Directory -Force | Out-Null
+            }
+
+            $DownloadUrl = ($Update).OriginUri
+            $DownloadFile = Join-Path $DownloadDirectory $UpdateFile
+
+            if ($PackageName -like "Office*") {
+                #===================================================================================================
+                #   MspFile
+                #===================================================================================================
                 $MspFile = $UpdateFile -replace '.cab', '.msp'
-                $DownloadDirectory = "$PackagePath\$($Update.Title)"
+                $MspFilePath = Join-Path $DownloadDirectory $MspFile
 
-                if (!(Test-Path "$DownloadDirectory")) {New-Item -Path "$DownloadDirectory" -ItemType Directory -Force | Out-Null}
-            
-                if (Test-Path "$DownloadDirectory\$MspFile") {
-                    Write-Host "$DownloadDirectory\$MspFile" -ForegroundColor Cyan
-                } else {
-                    Write-Host "$DownloadDirectory\$MspFile" -ForegroundColor Cyan
-                    Write-Host "Download: $($Update.OriginUri)" -ForegroundColor Gray
-                    Start-BitsTransfer -Source $($Update.OriginUri) -Destination "$DownloadDirectory\$UpdateFile"
+                Write-Host $MspFilePath -ForegroundColor Cyan
+
+                if (-NOT (Test-Path $MspFilePath)) {
+                    Write-Host "Download: $DownloadUrl" -ForegroundColor Gray
+                    Start-BitsTransfer -Source $DownloadUrl -Destination $DownloadFile
                 }
 
-                if ((Test-Path "$DownloadDirectory\$UpdateFile") -and (!(Test-Path "$DownloadDirectory\$MspFile"))) {
-                    Write-Host "Expand: $DownloadDirectory\$MspFile" -ForegroundColor Gray
-                    expand "$DownloadDirectory\$UpdateFile" -F:* "$DownloadDirectory" | Out-Null
+                if ((Test-Path $DownloadFile) -and (-NOT (Test-Path $MspFilePath))) {
+                    Write-Host "Expand: $MspFilePath" -ForegroundColor Gray
+                    expand "$DownloadFile" -F:* "$DownloadDirectory" | Out-Null
                 }
 
-                if ((Test-Path "$DownloadDirectory\$UpdateFile") -and (Test-Path "$DownloadDirectory\$MspFile")) {
-                    Write-Host "Remove: $DownloadDirectory\$UpdateFile" -ForegroundColor Gray
-                    Remove-Item "$DownloadDirectory\$UpdateFile" -Force | Out-Null
+                if ((Test-Path $DownloadFile) -and (Test-Path $MspFilePath)) {
+                    Write-Host "Remove: $DownloadFile" -ForegroundColor Gray
+                    Remove-Item $DownloadFile -Force | Out-Null
                 }
                 #===================================================================================================
                 #   Office Setup Updates
                 #===================================================================================================
                 if ($OfficeSetupUpdatesPath) {
-                    if (!(Test-Path "$OfficeSetupUpdatesPath")) {New-Item -Path "$OfficeSetupUpdatesPath" -ItemType Directory -Force | Out-Null}
+                    if (-NOT (Test-Path "$OfficeSetupUpdatesPath")) {
+                        New-Item -Path "$OfficeSetupUpdatesPath" -ItemType Directory -Force | Out-Null
+                    }
+                    
                     Write-Host "Date Created: $($Update.CreationDate)" -ForegroundColor Gray
-                    Write-Host "Source: $DownloadDirectory\$MspFile" -ForegroundColor Gray
+                    Write-Host "Source: $MspFilePath" -ForegroundColor Gray
                     Write-Host "Destination: $OfficeSetupUpdatesPath\$MspFile" -ForegroundColor Gray
-                    Copy-Item -Path "$DownloadDirectory\$MspFile" "$OfficeSetupUpdatesPath\$MspFile" -Force
+                    Copy-Item -Path $MspFilePath "$OfficeSetupUpdatesPath\$MspFile" -Force
                 }
             }
-        } else {
-            foreach ($Update in $OSDUpdate) {
-                $UpdateFile = $($Update.FileName)
-                $DownloadDirectory = "$PackagePath\$($Update.Title)"
-
-                if (!(Test-Path "$DownloadDirectory")) {New-Item -Path "$DownloadDirectory" -ItemType Directory -Force | Out-Null}
-            
-                if (Test-Path "$DownloadDirectory\$UpdateFile") {
-                    Write-Host "$($Update.Title)" -ForegroundColor Cyan
-                    Write-Host "$DownloadDirectory\$UpdateFile" -ForegroundColor Gray
-                    #Write-Host "Update already downloaded" -ForegroundColor Gray
+            else {
+                if (Test-Path $DownloadFile) {
+                    Write-Host -ForegroundColor Cyan $UpdateTitle
+                    Write-Host -ForegroundColor Gray $DownloadFile
                 } else {
-                    Write-Host "$($Update.Title)" -ForegroundColor Cyan
-                    Write-Host "$($Update.OriginUri)" -ForegroundColor Gray
-                    Write-Host "$DownloadDirectory\$UpdateFile" -ForegroundColor Gray
-                    Start-BitsTransfer -Source $($Update.OriginUri) -Destination "$DownloadDirectory\$UpdateFile"
+                    Write-Host -ForegroundColor Cyan $UpdateTitle
+                    Write-Host -ForegroundColor Gray $DownloadUrl
+                    Write-Host -ForegroundColor Gray $DownloadFile
+                    Start-BitsTransfer -Source $DownloadUrl -Destination $DownloadFile
                 }
             }
         }

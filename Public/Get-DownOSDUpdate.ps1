@@ -63,7 +63,7 @@ function Get-DownOSDUpdate {
         [ValidateSet ('x64','x86')]
         [string]$UpdateArch,
 
-        [ValidateSet ('20H2',2009,2004,1909,1903,1809,1803,1709,1703,1607,1511,1507)]
+        [ValidateSet ('21H1','20H2',2009,2004,1909,1903,1809,1803,1709,1703,1607,1511,1507)]
         [string]$UpdateBuild,
 
         [ValidateSet ('AdobeSU','LCU','SSU','DotNet','DotNetCU','Optional')]
@@ -114,8 +114,12 @@ function Get-DownOSDUpdate {
         if ($UpdateBuild -eq '1903') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1903'}}
         if ($UpdateBuild -eq '1909') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1909'}}
         if ($UpdateBuild -eq '2004') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2004'}}
-        if ($UpdateBuild -eq '2009') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2009'}}
-        if ($UpdateBuild -eq '20H2') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2009'}}
+
+        if (($UpdateBuild -eq '2009') -or ($UpdateBuild -eq '20H2')) {
+            $OSDUpdate = $OSDUpdate | Where-Object {($_.UpdateBuild -eq '2009') -or ($_.UpdateBuild -eq '20H2')}
+        }
+        
+        if ($UpdateBuild -eq '21H1') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '21H1'}}
         #===================================================================================================
         #   UpdateGroup
         #===================================================================================================

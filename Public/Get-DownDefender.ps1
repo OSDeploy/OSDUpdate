@@ -28,7 +28,9 @@ function Get-DownDefender {
 
         [Parameter(Mandatory)]
         [ValidateSet('32-Bit','64-Bit')]
-        [string]$OSArch
+        [string]$OSArch,
+
+        [switch]$Curl
     )
     #===================================================================================================
     #   Paths
@@ -60,5 +62,10 @@ function Get-DownDefender {
     #===================================================================================================
     Write-Host "DownloadUrl: $DownloadUrl" -ForegroundColor Cyan
     Write-Host "DownloadPath: $DownloadPath" -ForegroundColor Cyan
-    Invoke-WebRequest -Uri $DownloadUrl -OutFile "$DownloadPath\mpam-fe $OS $OSArch.exe"
+    if ($Curl) {
+        Save-WebFile -SourceUrl "$DownloadUrl" -DestinationDirectory $DownloadPath -DestinationName "mpam-fe $OS $OSArch.exe" -Overwrite
+    }
+    else {
+        Invoke-WebRequest -Uri $DownloadUrl -OutFile "$DownloadPath\mpam-fe $OS $OSArch.exe"
+    }
 }
