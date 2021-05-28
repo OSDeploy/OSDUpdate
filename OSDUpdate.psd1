@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '21.5.20.1'
+ModuleVersion = '21.5.27.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -28,7 +28,7 @@ Copyright = '(c) 2021 David Segura osdeploy.com. All rights reserved.'
 Description = @'
 Added support for Windows 10 21H1
 
-Requires OSDSUS 20.12.10.1 or newer
+Requires OSDSUS 20.5.27.1 or newer
 
 OSDUpdate https://osdupdate.osdeploy.com/
 
