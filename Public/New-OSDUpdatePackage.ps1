@@ -93,6 +93,7 @@ function New-OSDUpdatePackage {
             #   Other
             #================================
             'McAfee SuperDAT v2',
+			'McAfee SuperDAT v3',
             'Windows Defender 8-10 32-Bit',
             'Windows Defender 8-10 64-Bit',
             'Servicing Stacks')]
@@ -163,6 +164,29 @@ function New-OSDUpdatePackage {
         #   Download
         #===================================================================================================
         Get-DownMcAfee -Download "SuperDAT v2" -DownloadPath $PackagePath -RenameDAT
+    #===================================================================================================
+    #   McAfee SuperDAT v3
+    #===================================================================================================
+    } elseif ($PackageName -eq 'McAfee SuperDAT v3') {
+        #===================================================================================================
+        #   Install Script
+        #===================================================================================================
+        if (!($SkipInstallScript)) {
+            Write-Host "Install Script: $PackagePath\Install-OSDUpdatePackage.ps1" -ForegroundColor Green
+            Copy-Item "$($MyInvocation.MyCommand.Module.ModuleBase)\Scripts\Install-OSDUpdateMcAfee.ps1" "$PackagePath\Install-OSDUpdatePackage.ps1" -Force | Out-Null
+        }
+        #===================================================================================================
+        #   Update Script
+        #===================================================================================================
+        if (!($SkipUpdateScript)) {
+            Write-Host "Update Script: $PackagePath\Update-OSDUpdatePackage.ps1" -ForegroundColor Green
+            $ExportLine = "New-OSDUpdatePackage -PackageName '$PackageName' -PackagePath ""`$PSScriptRoot"""
+            $ExportLine | Out-File -FilePath "$PackagePath\Update-OSDUpdatePackage.ps1"
+        }
+        #===================================================================================================
+        #   Download
+        #===================================================================================================
+        Get-DownMcAfee -Download "SuperDAT v3" -DownloadPath $PackagePath -RenameDAT
     #===================================================================================================
     #   Windows Defender
     #===================================================================================================

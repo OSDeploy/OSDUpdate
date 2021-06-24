@@ -92,22 +92,44 @@ if ($OSVersion -Like "10*") {
 #======================================================================================
 Write-Host "Updating McAfee xDAT Signatures" -ForegroundColor Green
 #======================================================================================
-#   Validate
+#   Validate McAfee SuperDAT v2
 #======================================================================================
-$Software = "McAfee VirusScan"
-$Installed = Get-ItemProperty ('HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*','HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*') -EA SilentlyContinue | Where-Object { $_.DisplayName -like "*$Software*" }
+if (Test-Path "$PSScriptRoot\xdat.exe") {
+	$Software = "McAfee VirusScan"
+	$Installed = Get-ItemProperty ('HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*','HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*') -EA SilentlyContinue | Where-Object { $_.DisplayName -like "*$Software*" }
+	#======================================================================================
+	#   Execute
+	#======================================================================================
+	If ($null -eq $Installed) {
+		Write-Warning "McAfee VirusScan is not installed"
+	} else {
+		Write-Host "Installing McAfee xDAT" -ForegroundColor Cyan
+		if (!(Test-Path "$env:Temp\McAfee\xDAT")) {
+			New-Item "$env:Temp\McAfee\xDAT" -ItemType Directory -Force | Out-Null
+		}
+		Copy-Item "$PSScriptRoot\xdat.exe" "$env:Temp\McAfee\xDAT" -Force | Out-Null
+		Start-Process "$env:Temp\McAfee\xDAT\xdat.exe" -ArgumentList '/SILENT','/F' -Wait
+	}
+}
 #======================================================================================
-#   Execute
+#   Validate McAfee SuperDAT v3
 #======================================================================================
-If ($null -eq $Installed) {
-    Write-Warning "McAfee VirusScan is not installed"
-} else {
-    Write-Host "Installing McAfee xDAT" -ForegroundColor Cyan
-    if (!(Test-Path "$env:Temp\McAfee\xDAT")) {
-        New-Item "$env:Temp\McAfee\xDAT" -ItemType Directory -Force | Out-Null
-    }
-    Copy-Item "$PSScriptRoot\xdat.exe" "$env:Temp\McAfee\xDAT" -Force | Out-Null
-    Start-Process "$env:Temp\McAfee\xDAT\xdat.exe" -ArgumentList '/SILENT','/F' -Wait
+if (Test-Path "$PSScriptRoot\V3_xdat.exe") {
+	$Software = "McAfee Endpoint Security Threat Prevention"
+	$Installed = Get-ItemProperty ('HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*','HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*') -EA SilentlyContinue | Where-Object { $_.DisplayName -like "*$Software*" }
+	#======================================================================================
+	#   Execute
+	#======================================================================================
+	If ($null -eq $Installed) {
+		Write-Warning "McAfee Endpoint Security is not installed"
+	} else {
+		Write-Host "Installing McAfee xDAT" -ForegroundColor Cyan
+		if (!(Test-Path "$env:Temp\McAfee\xDAT")) {
+			New-Item "$env:Temp\McAfee\xDAT" -ItemType Directory -Force | Out-Null
+		}
+		Copy-Item "$PSScriptRoot\V3_xdat.exe" "$env:Temp\McAfee\xDAT" -Force | Out-Null
+		Start-Process "$env:Temp\McAfee\xDAT\V3_xdat.exe" -ArgumentList '/SILENT','/F' -Wait
+	}
 }
 #======================================================================================
 #   Complete

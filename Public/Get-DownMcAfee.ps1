@@ -112,7 +112,7 @@ function Get-DownMcAfee {
             Start-BitsTransfer -Source $DownloadUrl -Destination "$DownloadPath\xdat.exe"
         } elseif ($Download -eq 'SuperDAT v3' -and $RenameDAT.IsPresent -and (!($EPO.IsPresent)) ) {
             Write-Host "RenameDAT: $DownloadPath\DATv3.exe" -ForegroundColor Cyan
-            Start-BitsTransfer -Source $DownloadUrl -Destination "$DownloadPath\DATv3.exe"
+            Start-BitsTransfer -Source $DownloadUrl -Destination "$DownloadPath\V3_xdat.exe"
         } else {
             Start-BitsTransfer -Source $DownloadUrl -Destination "$DownloadPath"
         }
