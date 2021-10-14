@@ -7,7 +7,7 @@
 RootModule = 'OSDUpdate.psm1'
 
 # Version number of his module.
-ModuleVersion = '21.10.7.1'
+ModuleVersion = '21.10.14.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -26,9 +26,7 @@ Copyright = '(c) 2021 David Segura osdeploy.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = @'
-Added support for Windows 10 21H1
-
-Requires OSDSUS 21.10.7.1 or newer
+Requires OSDSUS 21.10.14.1 or newer
 
 OSDUpdate https://osdupdate.osdeploy.com/
 
@@ -61,7 +59,7 @@ PowerShellVersion = '5.0'
 
 # Modules that must be imported into the global environment prior to importing this module
 RequiredModules = @(
-    @{ModuleName='OSDSUS'; ModuleVersion = '21.10.7.1'; Guid="065cf035-da73-4d17-8745-f55116b82fb5"}
+    @{ModuleName='OSDSUS'; ModuleVersion = '21.10.14.1'; Guid="065cf035-da73-4d17-8745-f55116b82fb5"}
 )
 
 # Assemblies that must be loaded prior to importing this module
