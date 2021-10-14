@@ -61,8 +61,6 @@ function New-OSDUpdatePackage {
             #================================
             #   Windows
             #================================
-            'Windows 7 x64',
-            'Windows 7 x86',
             'Windows 10 x64 1803',
             'Windows 10 x64 1809',
             'Windows 10 x64 1903',
@@ -71,6 +69,7 @@ function New-OSDUpdatePackage {
             'Windows 10 x64 2009',
             'Windows 10 x64 20H2',
             'Windows 10 x64 21H1',
+            'Windows 10 x64 21H2',
             'Windows 10 x86 1803',
             'Windows 10 x86 1809',
             'Windows 10 x86 1903',
@@ -79,16 +78,16 @@ function New-OSDUpdatePackage {
             'Windows 10 x86 2009',
             'Windows 10 x86 20H2',
             'Windows 10 x86 21H1',
-            'Windows Server 2016 1607',
-            'Windows Server 2016 1709',
-            'Windows Server 2016 1803',
-            'Windows Server 2019 1809',
-            'Windows Server SAC 1809',
-            'Windows Server SAC 1903',
-            'Windows Server SAC 1909',
-            'Windows Server SAC 2004',
-            'Windows Server SAC 20H2',
-            'Windows Server SAC 21H1',
+            'Windows 10 x86 21H2',
+            'Windows Server 1607',
+            'Windows Server 1709',
+            'Windows Server 1803',
+            'Windows Server 1809',
+            'Windows Server 1903',
+            'Windows Server 1909',
+            'Windows Server 2004',
+            'Windows Server 20H2',
+            'Windows Server 21H2',
             #================================
             #   Other
             #================================
@@ -238,21 +237,14 @@ function New-OSDUpdatePackage {
         if ($PackageName -match 'Office') {
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $PackageName}
         }
-    
-        if ($PackageName -like "Windows*") {
-            if ($PackageName -like "Windows 7*") {
-                $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows 7'}
-            } elseif ($PackageName -like "Windows 10*") {
-                $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows 10'}
-            } elseif ($PackageName -like "Windows Server 2016*") {
-                $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 2016'}
-            } elseif ($PackageName -like "Windows Server 2019*") {
-                $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 2019'}
-            } elseif ($PackageName -match "Windows Server SAC 1809") {
-                $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 2019'}
-            } elseif ($PackageName -match "Windows Server SAC") {
-                $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq 'Windows Server 1903 and Later'}
-            }
+
+        if ($PackageName -match 'Windows 10') {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -match 'Windows 10'}
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -notmatch 'Dynamic'}
+        }
+        if ($PackageName -match 'Windows Server') {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -match 'Windows Server'}
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -notmatch 'Dynamic'}
         }
         #===================================================================================================
         #   AllOSDUpdates
@@ -372,12 +364,9 @@ function New-OSDUpdatePackage {
             if ($PackageName -match '1903') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1903'}}
             if ($PackageName -match '1909') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1909'}}
             if ($PackageName -match '2004') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2004'}}
-
-            if (($PackageName -match '2009') -or ($PackageName -match '20H2')) {
-                $OSDUpdate = $OSDUpdate | Where-Object {($_.UpdateBuild -eq '1909') -or ($_.UpdateBuild -eq '20H2')}
-            }
-            
+            if ($PackageName -match '20H2') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '20H2'}}
             if ($PackageName -match '21H1') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '21H1'}}
+            if ($PackageName -match '21H2') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '21H2'}}
         }
         $OSDUpdate | Export-Clixml -Path "$PackagePath\OSDUpdatePackage.xml" -Force | Out-Null
 

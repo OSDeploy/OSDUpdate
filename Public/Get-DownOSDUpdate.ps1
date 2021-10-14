@@ -51,19 +51,18 @@ function Get-DownOSDUpdate {
             'Office 2013 64-Bit',
             'Office 2016 32-Bit',
             'Office 2016 64-Bit',
-            'Windows 7',
             'Windows 10',
-            'Windows Server 2012 R2',
+            'Windows 11',
+            'Windows Server',
             'Windows Server 2016',
-            'Windows Server 2019',
-            'Windows Server 1903 and Later')]
+            'Windows Server 2019')]
         [Alias('CatalogOffice','CatalogWindows')]
         [string]$Catalog,
 
         [ValidateSet ('x64','x86')]
         [string]$UpdateArch,
 
-        [ValidateSet ('21H1','20H2',2009,2004,1909,1903,1809,1803,1709,1703,1607,1511,1507)]
+        [ValidateSet ('21H2','21H1','20H2',2009,2004,1909,1903,1809,1803,1709,1703,1607,1511,1507)]
         [string]$UpdateBuild,
 
         [ValidateSet ('AdobeSU','LCU','SSU','DotNet','DotNetCU','Optional')]
@@ -93,8 +92,18 @@ function Get-DownOSDUpdate {
         #===================================================================================================
         #   Filter Catalog
         #===================================================================================================
-        if ($Catalog) {
-            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $Catalog}
+        switch ($Catalog) {
+            'Office 2010 32-Bit'                {$OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $Catalog}}
+            'Office 2010 64-Bit'                {$OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $Catalog}}
+            'Office 2013 32-Bit'                {$OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $Catalog}}
+            'Office 2013 64-Bit'                {$OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $Catalog}}
+            'Office 2016 32-Bit'                {$OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $Catalog}}
+            'Office 2016 64-Bit'                {$OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $Catalog}}
+            'Windows 10'                        {$OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -match $Catalog}}
+            'Windows 11'                        {$OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -match $Catalog}}
+            'Windows Server'                    {$OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -match $Catalog}}
+            'Windows Server 2016'               {$OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $Catalog}}
+            'Windows Server 2019'               {$OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -eq $Catalog}}
         }
         #===================================================================================================
         #   UpdateArch
@@ -114,12 +123,9 @@ function Get-DownOSDUpdate {
         if ($UpdateBuild -eq '1903') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1903'}}
         if ($UpdateBuild -eq '1909') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '1909'}}
         if ($UpdateBuild -eq '2004') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '2004'}}
-
-        if (($UpdateBuild -eq '2009') -or ($UpdateBuild -eq '20H2')) {
-            $OSDUpdate = $OSDUpdate | Where-Object {($_.UpdateBuild -eq '2009') -or ($_.UpdateBuild -eq '20H2')}
-        }
-        
+        if ($UpdateBuild -eq '20H2') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '20H2'}}
         if ($UpdateBuild -eq '21H1') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '21H1'}}
+        if ($UpdateBuild -eq '21H2') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '21H2'}}
         #===================================================================================================
         #   UpdateGroup
         #===================================================================================================
