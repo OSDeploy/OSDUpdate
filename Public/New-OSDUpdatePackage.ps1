@@ -70,6 +70,7 @@ function New-OSDUpdatePackage {
             'Windows 10 x64 20H2',
             'Windows 10 x64 21H1',
             'Windows 10 x64 21H2',
+            'Windows 11 x64 21H2',
             'Windows 10 x86 1803',
             'Windows 10 x86 1809',
             'Windows 10 x86 1903',
@@ -240,6 +241,10 @@ function New-OSDUpdatePackage {
 
         if ($PackageName -match 'Windows 10') {
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -match 'Windows 10'}
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -notmatch 'Dynamic'}
+        }
+        if ($PackageName -match 'Windows 11') {
+            $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -match 'Windows 11'}
             $OSDUpdate = $OSDUpdate | Where-Object {$_.Catalog -notmatch 'Dynamic'}
         }
         if ($PackageName -match 'Windows Server') {

@@ -188,6 +188,11 @@ Write-Host "OS Version: $OSVersion" -ForegroundColor Cyan
 Write-Host "OS Build Number: $OSBuildNumber" -ForegroundColor Cyan
 if ($OSVersion -Like "10*") {
     $OSReleaseID = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name ReleaseId).ReleaseId
+
+    if ($OSReleaseID -ge 2009) {
+        $OSReleaseID = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name DisplayVersion).DisplayVersion
+    }
+
     Write-Host "OS Release ID: $OSReleaseID" -ForegroundColor Cyan
 }
 #======================================================================================
@@ -316,7 +321,15 @@ if ($Catalog -like "Windows*") {
     } else {
         $Updates = $Updates | Where-Object {$_.Catalog -like "*Server*"}
     }
-    if ($OSVersion -like "10.*") {$Updates = $Updates | Where-Object {$_.UpdateBuild -eq $OSReleaseID}}
+    if ($OSVersion -like "10.*") {
+        $Updates = $Updates | Where-Object {$_.UpdateBuild -eq $OSReleaseID}
+        if ($OSCaption -match '11') {
+            $Updates = $Updates | Where-Object {$_.UpdateOS -eq 'Windows 11'}
+        }
+        else {
+            $Updates = $Updates | Where-Object {$_.UpdateOS -ne 'Windows 11'}
+        }
+    }
     #======================================================================================
     #   Get-Hotfix
     #======================================================================================
