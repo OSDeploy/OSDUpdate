@@ -70,7 +70,9 @@ function New-OSDUpdatePackage {
             'Windows 10 x64 20H2',
             'Windows 10 x64 21H1',
             'Windows 10 x64 21H2',
+            'Windows 10 x64 22H2',
             'Windows 11 x64 21H2',
+            'Windows 11 x64 22H2',
             'Windows 10 x86 1803',
             'Windows 10 x86 1809',
             'Windows 10 x86 1903',
@@ -80,6 +82,7 @@ function New-OSDUpdatePackage {
             'Windows 10 x86 20H2',
             'Windows 10 x86 21H1',
             'Windows 10 x86 21H2',
+            'Windows 10 x86 22H2',
             'Windows Server 1607',
             'Windows Server 1709',
             'Windows Server 1803',
@@ -372,6 +375,7 @@ function New-OSDUpdatePackage {
             if ($PackageName -match '20H2') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '20H2'}}
             if ($PackageName -match '21H1') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '21H1'}}
             if ($PackageName -match '21H2') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '21H2'}}
+            if ($PackageName -match '22H2') {$OSDUpdate = $OSDUpdate | Where-Object {$_.UpdateBuild -eq '22H2'}}
         }
         $OSDUpdate | Export-Clixml -Path "$PackagePath\OSDUpdatePackage.xml" -Force | Out-Null
 
